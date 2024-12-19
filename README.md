@@ -1,6 +1,5 @@
-# Welcome to My GitHub Profile 👋
+# Hi there! 👋
 
-Hi there! 👋 <br><br>
 I'm Niklas, a passionate Solution Architect specializing in Modern Workplace solutions.
 I enjoy designing and implementing solutions that empower teams to collaborate efficiently, whether through cloud services, automation, or advanced collaboration tools. I'm always eager to explore new trends in technology.<br><br>
 🚀 If you're interested in modern workplace transformation or have any questions, don’t hesitate to connect!
@@ -13,7 +12,7 @@ I enjoy designing and implementing solutions that empower teams to collaborate e
   </p>
 </div>
 
-![](https://komarev.com/ghpvc/?username=niklasrst&color=grey&style=for-the-badge)
+![](https://komarev.com/ghpvc/?username=niklasrst&color=blue&style=for-the-badge)
 
 ## 🛠️ Technologies & Tools 🛠️
 
