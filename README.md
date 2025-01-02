@@ -41,12 +41,12 @@ I enjoy designing and implementing solutions that empower teams to collaborate e
 ![Swift](https://img.shields.io/badge/swift-%23DD0031.svg?style=for-the-badge&logo=swift&logoColor=white)
 
 
-## 🏆 Badges 🏆
+## 🏆 Badges
 
 <a href="http://www.github.com/niklasrst"><img src="https://github-readme-stats.vercel.app/api?username=niklasrst&show_icons=true&hide=&count_private=true&title_color=0891b2&text_color=ffffff&icon_color=0891b2&bg_color=1c1917&hide_border=true&show_icons=true" alt="niklasrst's GitHub stats" /></a>
 
 
-## 🤝 Contributing 🤝
+## 🤝 Contributing
 Contributions, issues and feature requests are welcome. <br>
 Feel free to check issues page if you want to contribute. <br> <br>
 Check the contributing guide.
