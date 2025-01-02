@@ -12,8 +12,6 @@ I enjoy designing and implementing solutions that empower teams to collaborate e
   </p>
 </div>
 
-![](https://komarev.com/ghpvc/?username=niklasrst&color=blue&style=for-the-badge)
-
 ## 💻 Tech Stack
 ![Intune](https://img.shields.io/badge/intune-%23316192.svg?style=for-the-badge&logo=intune&logoColor=white)
 ![Active Directory](https://img.shields.io/badge/activedirectory-%23316192.svg?style=for-the-badge&logo=activedirectory&logoColor=white)
@@ -50,3 +48,6 @@ I enjoy designing and implementing solutions that empower teams to collaborate e
 Contributions, issues and feature requests are welcome. <br>
 Feel free to check issues page if you want to contribute. <br> <br>
 Check the contributing guide.
+
+<br><br>
+![](https://komarev.com/ghpvc/?username=niklasrst&color=blue&style=for-the-badge)
