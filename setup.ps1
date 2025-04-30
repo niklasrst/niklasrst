@@ -6,7 +6,6 @@
     This script downloads my winget dsc file and applies it to the system. It also enables the winget configure command.
     The script is intended to be run in a Windows environment and requires administrative privileges.
 
-
 .EXAMPLE
     Invoke-Expression (Invoke-RestMethod setup.rastcloud.com)
     iex (irm aka.rastcloud.com/setup)
@@ -30,7 +29,7 @@ Invoke-WebRequest -Uri $url -OutFile $destination
 
 $Data = @{
     WallpaperURL              = "https://raw.githubusercontent.com/niklasrst/niklasrst/refs/heads/main/bg.jpg"
-    DownloadDirectory         = "C:\temp"
+    DownloadDirectory         = "$env:TEMP"
     RegKeyPath                = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP'
     StatusValue               = "1"
 }
@@ -66,7 +65,6 @@ Function Get-WingetCmd {
             $WingetCmd = "$env:LocalAppData\Microsoft\WindowsApps\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe\winget.exe"
         }
     }
-
     return $WingetCmd
 }
 
@@ -79,8 +77,8 @@ $url = "https://raw.githubusercontent.com/niklasrst/niklasrst/refs/heads/main/co
 $destination = "$env:TEMP\configuration.dsc.yaml"
 Invoke-WebRequest -Uri $url -OutFile $destination
 
-winget configure --enable
-winget configure $env:TEMP\configuration.dsc.yaml --accept-configuration-agreements
+Start-Process -FilePath "winget.exe" -ArgumentList "configure --enable"
+Start-Process -FilePath "winget.exe" -ArgumentList "configure $env:TEMP\configuration.dsc.yaml --accept-configuration-agreements"
 
 # Create symbolic links
 Write-Host "Setting symlinks..." -ForegroundColor Yellow
@@ -116,7 +114,6 @@ Invoke-WebRequest -Uri "https://github.com/ryanoasis/nerd-fonts/releases/latest/
 Expand-Archive -Path $outfile -DestinationPath $user_font_dir -Force | Where-Object Name -like "*.ttf" | Foreach-Object {
     New-ItemProperty -Path $user_font_reg -Name $_.Name -Value $_.FullName -PropertyType String -Force | Out-Null
 }
-
 Remove-Item -Path $outfile -Force
 
 # Restart
