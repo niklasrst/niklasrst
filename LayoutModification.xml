@@ -1,0 +1,12 @@
+<LayoutModificationTemplate xmlns="http://schemas.microsoft.com/Start/2014/LayoutModification" xmlns:defaultlayout="http://schemas.microsoft.com/Start/2014/FullDefaultLayout" xmlns:start="http://schemas.microsoft.com/Start/2014/StartLayout" Version="1" xmlns:taskbar="http://schemas.microsoft.com/Start/2014/TaskbarLayout">
+  <CustomTaskbarLayoutCollection PinListPlacement="Replace">
+    <defaultLayout:TaskbarLayout>
+        <taskbar:TaskbarPinList>
+          <taskbar:DesktopApp DesktopApplicationID="MSEdge"></taskbar:DesktopApp>
+          <taskbar:UWA AppUserModelID="Microsoft.WindowsTerminal_8wekyb3d8bbwe!App"></taskbar:UWA>
+          <taskbar:UWA AppUserModelID="Microsoft.OutlookForWindows_8wekyb3d8bbwe!Microsoft.OutlookforWindows"></taskbar:UWA>
+          <taskbar:UWA AppUserModelID="MSTeams_8wekyb3d8bbwe!MSTeams"></taskbar:UWA>
+        </taskbar:TaskbarPinList>
+    </defaultLayout:TaskbarLayout>
+  </CustomTaskbarLayoutCollection>
+</LayoutModificationTemplate>
