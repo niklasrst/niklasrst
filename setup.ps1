@@ -23,6 +23,7 @@
 #requires -RunAsAdministrator
 
 # Set wallpaper
+Write-Host "Setting wallpaper..." -ForegroundColor Yellow
 $url = "https://raw.githubusercontent.com/niklasrst/niklasrst/refs/heads/main/bg.jpg"
 $destination = "$env:TEMP\bg.jpg"
 Invoke-WebRequest -Uri $url -OutFile $destination
@@ -43,11 +44,13 @@ New-ItemProperty -Path $Data.RegKeyPath -Name 'DesktopImagePath' -Value $Wallpap
 New-ItemProperty -Path $Data.RegKeyPath -Name 'DesktopImageUrl' -Value $WallpaperDest -PropertyType STRING -Force | Out-Null
 
 # Set taskbar layout
+Write-Host "Setting taskbarlayout..." -ForegroundColor Yellow
 $url = "https://raw.githubusercontent.com/niklasrst/niklasrst/refs/heads/main/LayoutModification.xml"
 $destination = "$ENV:LOCALAPPDATA\Microsoft\Windows\Shell\LayoutModification.xml"
 Invoke-WebRequest -Uri $url -OutFile $destination
 
 # Winget DSC
+Write-Host "Apply DSC..." -ForegroundColor Yellow
 Function Get-WingetCmd {
     $WingetCmd = $null
     #Get WinGet Path
@@ -79,5 +82,43 @@ Invoke-WebRequest -Uri $url -OutFile $destination
 winget configure --enable
 winget configure $env:TEMP\configuration.dsc.yaml --accept-configuration-agreements
 
+# Create symbolic links
+Write-Host "Setting symlinks..." -ForegroundColor Yellow
+Remove-Item -Path "$ENV:OneDrive\Dokumente\WindowsPowerShell" -Recurse -Force | Out-Null
+New-Item -Path "$ENV:OneDrive\Dokumente\WindowsPowerShell" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\pwsh" -Force | Out-Null
+Remove-Item -Path "$ENV:OneDrive\Dokumente\PowerShell" -Recurse -Force | Out-Null
+New-Item -Path "$ENV:OneDrive\Dokumente\PowerShell" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\pwsh" -Force | Out-Null
+New-Item -Path "$ENV:USERPROFILE\.gitconfig" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\.gitconfig" -Force | Out-Null
+New-Item -Path "$ENV:USERPROFILE\.gitconfig-azure" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\.gitconfig-azure" -Force | Out-Null
+New-Item -Path "$ENV:USERPROFILE\.gitconfig-github" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\.gitconfig-github" -Force | Out-Null
+Remove-Item -Path $ENV:LOCALAPPDATA\nvim -Recurse -Force | Out-Null
+New-Item -Path "$ENV:LOCALAPPDATA" -Name "nvim" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\nvim" -Force | Out-Null
+Remove-Item -Path $ENV:LOCALAPPDATA\superfile -Recurse -Force | Out-Null
+New-Item -Path "$ENV:LOCALAPPDATA" -Name "superfile" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\nvim" -Force | Out-Null
+Remove-Item -Path $ENV:LOCALAPPDATA\yazi -Recurse -Force | Out-Null
+New-Item -Path "$ENV:LOCALAPPDATA" -Name "yazi" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\yazi" -Force | Out-Null
+Remove-Item -Path "$ENV:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState" -Recurse -Force | Out-Null
+New-Item -Path "$ENV:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe" -Name "LocalState" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\windowsterminal" -Force | Out-Null
+Remove-Item -Path $ENV:LOCALAPPDATA\Packages\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe\LocalState -Recurse -Force | Out-Null
+New-Item -Path "$ENV:LOCALAPPDATA\Packages\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe" -Name "LocalState" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\winget-config" -Force | Out-Null
+New-Item -Path "C:\Data\repos\" -Name "tools" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\tools" -Force | Out-Null
+
+# Install nerdfonts
+Write-Host "Adding fonts..." -ForegroundColor Yellow
+$font_name = "CascadiaCode"
+$archive = "$font_name.zip"
+$outfile = "$env:TEMP\$archive"
+$user_font_dir = "$env:LOCALAPPDATA\Microsoft\Windows\Fonts"
+$user_font_reg = "HKCU:\Software\Microsoft\Windows NT\CurrentVersion\Fonts"
+
+Invoke-WebRequest -Uri "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$archive" -OutFile $outfile
+
+Expand-Archive -Path $outfile -DestinationPath $user_font_dir -Force | Where-Object Name -like "*.ttf" | Foreach-Object {
+    New-ItemProperty -Path $user_font_reg -Name $_.Name -Value $_.FullName -PropertyType String -Force | Out-Null
+}
+
+Remove-Item -Path $outfile -Force
+
 # Restart
+Write-Host "Rebooting..." -ForegroundColor Yellow
 Restart-Computer -Delay 30 -Force

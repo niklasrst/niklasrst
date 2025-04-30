@@ -118,29 +118,6 @@ properties:
         ValueType: "Dword"
         Force: true
     - resource: xPSDesiredStateConfiguration/xScript
-      id: nerdFont
-      directives:
-        description: Installs nerd font specified
-      settings:
-        GetScript: |
-          @{}
-        TestScript: |
-          Test-Path -Path "$env:LOCALAPPDATA\Microsoft\Windows\Fonts\*CascadiaCode*"
-        SetScript: |
-          $font_name = "CascadiaCode"
-          $archive = "$font_name.zip"
-          $outfile = "$env:TEMP\$archive"
-          $user_font_dir = "$env:LOCALAPPDATA\Microsoft\Windows\Fonts"
-          $user_font_reg = "HKCU:\Software\Microsoft\Windows NT\CurrentVersion\Fonts"
-
-          Invoke-WebRequest -Uri "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$archive" -OutFile $outfile
-
-          Expand-Archive -Path $outfile -DestinationPath $user_font_dir -Force | Where-Object Name -like "*.ttf" | Foreach-Object {
-              New-ItemProperty -Path $user_font_reg -Name $_.Name -Value $_.FullName -PropertyType String -Force | Out-Null
-          }
-          
-          Remove-Item -Path $outfile -Force
-    - resource: xPSDesiredStateConfiguration/xScript
       id: bloatwareCleanup
       directives:
         description: Removing Windows Bloatware
@@ -174,18 +151,6 @@ properties:
               Get-AppXProvisionedPackage -Online | Where-Object DisplayName -EQ $app | Remove-AppxProvisionedPackage -Online
           }
     - resource: xPSDesiredStateConfiguration/xScript
-      id: tasbarPins
-      directives:
-        description: Customizing Windows Taskbar Pins
-        allowPrerelease: true
-      settings:
-        GetScript: |
-          @{}
-        TestScript: |
-          Test-Path -Path "$env:LOCALAPPDATA\Microsoft\Windows\Shell\LayoutModification.json"
-        SetScript: |
-          Copy-Item -Path "$env:LOCALAPPDATA\Packages\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe\LocalState\configurations\LayoutModification.xml" -Destination "$env:LOCALAPPDATA\Microsoft\Windows\Shell" -Force
-    - resource: xPSDesiredStateConfiguration/xScript
       id: dataFolder
       directives:
         description: Creating C:\Data folder
@@ -199,50 +164,6 @@ properties:
           New-Item -Path "C:\" -Name "Data" -ItemType Directory -Force
           New-Item -Path "C:\Data" -Name "repos" -ItemType Directory -Force
           New-Item -Path "C:\Data" -Name "temp" -ItemType Directory -Force
-    - resource: xPSDesiredStateConfiguration/xScript
-      id: dotfilesConfigurations
-      dependsOn:
-        - gitPackage
-        - dataFolder
-        - dotfilesRepo
-      directives:
-        description: Configure dotfiles settings
-        allowPrerelease: true
-      settings:
-        GetScript: |
-          @{}
-        TestScript: |
-          @{}
-        SetScript: |
-          Write-Verbose "PWSH Section"
-          New-Item -Path "$ENV:OneDrive\Dokumente\WindowsPowerShell" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\pwsh" -Force | Out-Null
-          New-Item -Path "$ENV:OneDrive\Dokumente\PowerShell" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\pwsh" -Force | Out-Null
-          New-Item -Path "$ENV:USERPROFILE\.gitconfig" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\.gitconfig" -Force | Out-Null
-          New-Item -Path "$ENV:USERPROFILE\.gitconfig-azure" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\.gitconfig-azure" -Force | Out-Null
-          New-Item -Path "$ENV:USERPROFILE\.gitconfig-github" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\.gitconfig-github" -Force | Out-Null
-
-          Write-Verbose "Nvim Section"
-          Remove-Item -Path $ENV:LOCALAPPDATA\nvim -Recurse -Force | Out-Null
-          New-Item -Path "$ENV:LOCALAPPDATA" -Name "nvim" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\nvim" -Force | Out-Null
-
-          Write-Verbose "Superfile Section"
-          Remove-Item -Path $ENV:LOCALAPPDATA\superfile -Recurse -Force | Out-Null
-          New-Item -Path "$ENV:LOCALAPPDATA" -Name "superfile" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\nvim" -Force | Out-Null
-
-          Write-Verbose "Yazi Section"
-          Remove-Item -Path $ENV:LOCALAPPDATA\yazi -Recurse -Force | Out-Null
-          New-Item -Path "$ENV:LOCALAPPDATA" -Name "yazi" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\yazi" -Force | Out-Null
-
-          Write-Verbose "Windows Terminal Section"
-          Remove-Item -Path "$ENV:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState" -Recurse -Force | Out-Null
-          New-Item -Path "$ENV:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe" -Name "LocalState" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\windowsterminal" -Force | Out-Null
-
-          Write-Verbose "Windows App Installer Section"
-          Remove-Item -Path $ENV:LOCALAPPDATA\Packages\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe\LocalState -Recurse -Force | Out-Null
-          New-Item -Path "$ENV:LOCALAPPDATA\Packages\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe" -Name "LocalState" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\winget-config" -Force | Out-Null
-
-          Write-Verbose "Tools Folder Section"
-          New-Item -Path "C:\Data\repos\" -Name "tools" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\tools" -Force | Out-Null
     ####################
     #     Features     #
     ####################
@@ -296,6 +217,14 @@ properties:
     ####################
     #   PWSH Modules   #
     ####################
+    - resource: PowerShellModule/PSModuleResource
+      id: Microsoft.AzPwshModule
+      directives:
+        description: Install Microsoft.Az PWSH Module
+        allowPrerelease: true
+      settings:
+        Module_Name: Az
+        Ensure: Present
     - resource: PowerShellModule/PSModuleResource
       id: Microsoft.Graph.AuthenticationPwshModule
       directives:
