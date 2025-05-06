@@ -117,6 +117,28 @@ properties:
         ValueData: "0"
         ValueType: "Dword"
         Force: true
+    - resource: xPSDesiredStateConfiguration/xRegistry
+      id: configureStartPins
+      directives:
+        description: Configure Start Pins 
+      settings:
+        Ensure: "Present"
+        Key: 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PolicyManager\current\device\Start'
+        ValueName: "ConfigureStartPins"
+        ValueData: '{"pinnedList":[{"desktopAppLink":"%ALLUSERSPROFILE%\\Microsoft\\Windows\\Start Menu\\Programs\\Microsoft Edge.lnk"},{"packagedAppId":"AppleInc.AppleMusicWin_nzyj5cx40ttqa!App"},{"packagedAppId":"MicrosoftCorporationII.Windows365_8wekyb3d8bbwe!Windows365"},{"packagedAppId":"Microsoft.CompanyPortal_8wekyb3d8bbwe!App"},{"desktopAppLink":"%APPDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\SpaceSniffer.lnk"},{"packagedAppId":"windows.immersivecontrolpanel_cw5n1h2txyewy!microsoft.windows.immersivecontrolpanel"}]}'
+        ValueType: "String"
+        Force: true
+    - resource: xPSDesiredStateConfiguration/xRegistry
+      id: configureTaskbarPins
+      directives:
+        description: Configure Taskbar Pins
+      settings:
+        Ensure: "Present"
+        Key: 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PolicyManager\current\device\Start'
+        ValueName: "StartLayout"
+        ValueData: '<LayoutModificationTemplate xmlns="http://schemas.microsoft.com/Start/2014/LayoutModification" xmlns:defaultlayout="http://schemas.microsoft.com/Start/2014/FullDefaultLayout" xmlns:start="http://schemas.microsoft.com/Start/2014/StartLayout" Version="1" xmlns:taskbar="http://schemas.microsoft.com/Start/2014/TaskbarLayout"><CustomTaskbarLayoutCollection PinListPlacement="Replace"><defaultLayout:TaskbarLayout><taskbar:TaskbarPinList><taskbar:DesktopApp DesktopApplicationID="MSEdge"></taskbar:DesktopApp><taskbar:UWA AppUserModelID="Microsoft.WindowsTerminal_8wekyb3d8bbwe!App"></taskbar:UWA><taskbar:UWA AppUserModelID="Microsoft.OutlookForWindows_8wekyb3d8bbwe!Microsoft.OutlookforWindows"></taskbar:UWA><taskbar:UWA AppUserModelID="MSTeams_8wekyb3d8bbwe!MSTeams"></taskbar:UWA></taskbar:TaskbarPinList></defaultLayout:TaskbarLayout></CustomTaskbarLayoutCollection></LayoutModificationTemplate>'
+        ValueType: "String"
+        Force: true
     - resource: xPSDesiredStateConfiguration/xScript
       id: bloatwareCleanup
       directives:
