@@ -42,12 +42,6 @@ New-ItemProperty -Path $Data.RegKeyPath -Name 'DesktopImageStatus' -Value $Data.
 New-ItemProperty -Path $Data.RegKeyPath -Name 'DesktopImagePath' -Value $WallpaperDest -PropertyType STRING -Force | Out-Null
 New-ItemProperty -Path $Data.RegKeyPath -Name 'DesktopImageUrl' -Value $WallpaperDest -PropertyType STRING -Force | Out-Null
 
-# Set taskbar layout
-Write-Host "Setting taskbarlayout..." -ForegroundColor Yellow
-$url = "https://raw.githubusercontent.com/niklasrst/niklasrst/refs/heads/main/LayoutModification.xml"
-$destination = "$ENV:LOCALAPPDATA\Microsoft\Windows\Shell\LayoutModification.xml"
-Invoke-WebRequest -Uri $url -OutFile $destination
-
 # Winget DSC
 Write-Host "Apply DSC..." -ForegroundColor Yellow
 Function Get-WingetCmd {
