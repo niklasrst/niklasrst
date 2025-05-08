@@ -63,6 +63,7 @@ Function Get-WingetCmd {
 }
 
 if ($null -eq (Get-WingetCmd)) { 
+    Install-PackageProvider -Name NuGet -Force
     Install-Module -Name Microsoft.WinGet.Client -Force -Confirm:$false
     Repair-WinGetPackageManager -AllUsers -Force
 }
