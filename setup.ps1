@@ -30,8 +30,17 @@ New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Personal
 New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Name 'DesktopImageUrl' -Value "$env:TEMP\Wallpaper.jpg" -PropertyType STRING -Force | Out-Null
 
 # Start- and Taskbarlayout
-Write-Host "Setting Start- and Taskbarlayout..." -ForegroundColor Yellow
-Copy-Item -Path "$PSScriptRoot\LayoutModification.xml" -Destination "$env:LOCALAPPDATA\Microsoft\Windows\Shell" -Force
+Write-Host "Setting Taskbarlayout..." -ForegroundColor Yellow
+if (Test-Path "$env:LOCALAPPDATA\Microsoft\Windows\Shell\LayoutModification.xml") {
+    Remove-Item -Path "$env:LOCALAPPDATA\Microsoft\Windows\Shell\LayoutModification.xml" -Force
+}
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/niklasrst/niklasrst/refs/heads/main/LayoutModification.xml" -OutFile "$env:LOCALAPPDATA\Microsoft\Windows\Shell\LayoutModification.xml"
+
+Write-Host "Setting Startlayout..." -ForegroundColor Yellow
+if (Test-Path "$env:LOCALAPPDATA\Microsoft\Windows\Shell\LayoutModification.json") {
+    Remove-Item -Path "$env:LOCALAPPDATA\Microsoft\Windows\Shell\LayoutModification.json" -Force
+}
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/niklasrst/niklasrst/refs/heads/main/LayoutModification.json" -OutFile "$env:LOCALAPPDATA\Microsoft\Windows\Shell\LayoutModification.json"
 
 # Apply Winget DSC
 Write-Host "Apply DSC..." -ForegroundColor Yellow
