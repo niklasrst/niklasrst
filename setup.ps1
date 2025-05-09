@@ -10,8 +10,12 @@
     Invoke-Expression (Invoke-RestMethod setup.rastcloud.com)
     iex (irm aka.rastcloud.com/setup)
 
+    Update Git submodules
+    git pull --recurse-submodules
+
 .NOTES
     This script is intended to setup clients for the RAST Cloud environment.
+
 
 .LINK
     https://github.com/niklasrst/niklasrst
