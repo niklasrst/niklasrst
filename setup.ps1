@@ -23,30 +23,17 @@
 
 # Set wallpaper
 Write-Host "Setting wallpaper..." -ForegroundColor Yellow
-$url = "https://raw.githubusercontent.com/niklasrst/niklasrst/refs/heads/main/bg.jpg"
-$destination = "$env:TEMP\bg.jpg"
-Invoke-WebRequest -Uri $url -OutFile $destination
-
-$Data = @{
-    WallpaperURL              = "https://raw.githubusercontent.com/niklasrst/niklasrst/refs/heads/main/bg.jpg"
-    DownloadDirectory         = "$env:TEMP"
-    RegKeyPath                = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP'
-    StatusValue               = "1"
-}
-
-$WallpaperDest  = $($Data.DownloadDirectory + "\Wallpaper." + ($Data.WallpaperURL -replace ".*\."))
-New-Item -ItemType Directory -Path $Data.DownloadDirectory -ErrorAction SilentlyContinue
-Start-BitsTransfer -Source $Data.WallpaperURL -Destination $WallpaperDest
-New-Item -Path $Data.RegKeyPath -Force -ErrorAction SilentlyContinue | Out-Null
-New-ItemProperty -Path $Data.RegKeyPath -Name 'DesktopImageStatus' -Value $Data.Statusvalue -PropertyType DWORD -Force | Out-Null
-New-ItemProperty -Path $Data.RegKeyPath -Name 'DesktopImagePath' -Value $WallpaperDest -PropertyType STRING -Force | Out-Null
-New-ItemProperty -Path $Data.RegKeyPath -Name 'DesktopImageUrl' -Value $WallpaperDest -PropertyType STRING -Force | Out-Null
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/niklasrst/niklasrst/refs/heads/main/bg.jpg" -OutFile "$env:TEMP\Wallpaper.jpg"
+New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Force -ErrorAction SilentlyContinue | Out-Null
+New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Name 'DesktopImageStatus' -Value "1" -PropertyType DWORD -Force | Out-Null
+New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Name 'DesktopImagePath' -Value "$env:TEMP\Wallpaper.jpg" -PropertyType STRING -Force | Out-Null
+New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Name 'DesktopImageUrl' -Value "$env:TEMP\Wallpaper.jpg" -PropertyType STRING -Force | Out-Null
 
 # Start- and Taskbarlayout
 Write-Host "Setting Start- and Taskbarlayout..." -ForegroundColor Yellow
 Copy-Item -Path "$PSScriptRoot\LayoutModification.xml" -Destination "$env:LOCALAPPDATA\Microsoft\Windows\Shell" -Force
 
-# Winget DSC
+# Apply Winget DSC
 Write-Host "Apply DSC..." -ForegroundColor Yellow
 Function Get-WingetCmd {
     $WingetCmd = $null
@@ -72,10 +59,7 @@ if ($null -eq (Get-WingetCmd)) {
     Repair-WinGetPackageManager -AllUsers -Force
 }
 
-$url = "https://raw.githubusercontent.com/niklasrst/niklasrst/refs/heads/main/configuration.dsc.yaml"
-$destination = "$env:TEMP\configuration.dsc.yaml"
-Invoke-WebRequest -Uri $url -OutFile $destination
-
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/niklasrst/niklasrst/refs/heads/main/configuration.dsc.yaml" -OutFile "$env:TEMP\configuration.dsc.yaml"
 Start-Process -FilePath "winget.exe" -ArgumentList "configure --enable" -Wait
 Start-Process -FilePath "winget.exe" -ArgumentList "configure $env:TEMP\configuration.dsc.yaml --accept-configuration-agreements" -Wait
 
