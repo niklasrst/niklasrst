@@ -72,6 +72,10 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/niklasrst/niklasrst/re
 Start-Process -FilePath "winget.exe" -ArgumentList "configure --enable" -Wait
 Start-Process -FilePath "winget.exe" -ArgumentList "configure $env:TEMP\configuration.dsc.yaml --accept-configuration-agreements" -Wait
 
+# Clone configs
+Write-Host "Cloning git configs..." -ForegroundColor Yellow
+Start-Process -FilePath "git.exe" -ArgumentList "clone --recurse-submodules https://github.com/niklasrst/dotfiles C:\Data\repos\dotfiles" -Wait
+
 # Create symbolic links
 Write-Host "Setting symlinks..." -ForegroundColor Yellow
 Remove-Item -Path "$ENV:OneDrive\Dokumente\WindowsPowerShell" -Recurse -Force | Out-Null

@@ -675,18 +675,4 @@ properties:
       settings:
         id: niklasrast.vpntoggle
         source: winget
-    ####################
-    #      Repos       #
-    #################### 
-    - resource: GitDsc/GitClone
-      id: dotfilesRepo
-      dependsOn:
-        - gitPackage
-      directives:
-        description: Clone dotfiles repo
-        allowPrerelease: true
-      settings:
-        HttpsUrl: https://github.com/niklasrst/dotfiles
-        RootDirectory: C:\Data\repos
-        RecurseSubmodules: true
   configurationVersion: 0.2.0
