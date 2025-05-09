@@ -79,24 +79,50 @@ Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -ExecutionPol
 
 # Create symbolic links
 Write-Host "Setting symlinks..." -ForegroundColor Yellow
-Remove-Item -Path "$ENV:OneDrive\Dokumente\WindowsPowerShell" -Recurse -Force | Out-Null
+## PWSH5
+if (Test-Path "$ENV:OneDrive\Dokumente\WindowsPowerShell") { 
+    Remove-Item -Path "$ENV:OneDrive\Dokumente\WindowsPowerShell" -Recurse -Force | Out-Null
+}
 New-Item -Path "$ENV:OneDrive\Dokumente\WindowsPowerShell" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\pwsh" -Force | Out-Null
-Remove-Item -Path "$ENV:OneDrive\Dokumente\PowerShell" -Recurse -Force | Out-Null
+## PWSH7
+if (Test-Path "$ENV:OneDrive\Dokumente\PowerShell") { 
+    Remove-Item -Path "$ENV:OneDrive\Dokumente\PowerShell" -Recurse -Force | Out-Null
+}
 New-Item -Path "$ENV:OneDrive\Dokumente\PowerShell" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\pwsh" -Force | Out-Null
+##GIT
+if (Test-Path "$ENV:USERPROFILE\.gitconfig") { 
+    Remove-Item -Path "$ENV:USERPROFILE\.gitconfig" -Force | Out-Null
+    Remove-Item -Path "$ENV:USERPROFILE\.gitconfig-azure" -Force | Out-Null
+    Remove-Item -Path "$ENV:USERPROFILE\.gitconfig-github" -Force | Out-Null
+}
 New-Item -Path "$ENV:USERPROFILE\.gitconfig" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\.gitconfig" -Force | Out-Null
 New-Item -Path "$ENV:USERPROFILE\.gitconfig-azure" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\.gitconfig-azure" -Force | Out-Null
 New-Item -Path "$ENV:USERPROFILE\.gitconfig-github" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\.gitconfig-github" -Force | Out-Null
-Remove-Item -Path $ENV:LOCALAPPDATA\nvim -Recurse -Force | Out-Null
+##NVIM
+if (Test-Path "$ENV:LOCALAPPDATA\nvim") { 
+    Remove-Item -Path "$ENV:LOCALAPPDATA\nvim" -Recurse -Force | Out-Null
+}
 New-Item -Path "$ENV:LOCALAPPDATA" -Name "nvim" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\nvim" -Force | Out-Null
-Remove-Item -Path $ENV:LOCALAPPDATA\superfile -Recurse -Force | Out-Null
+##SUPERFILE
+if (Test-Path "$ENV:LOCALAPPDATA\superfile") { 
+    Remove-Item -Path "$ENV:LOCALAPPDATA\superfile" -Recurse -Force | Out-Null
+}
 New-Item -Path "$ENV:LOCALAPPDATA" -Name "superfile" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\nvim" -Force | Out-Null
-Remove-Item -Path $ENV:LOCALAPPDATA\yazi -Recurse -Force | Out-Null
+##YAZI
+if (Test-Path "$ENV:LOCALAPPDATA\yazi") { 
+    Remove-Item -Path "$ENV:LOCALAPPDATA\yazi" -Recurse -Force | Out-Null
+}
 New-Item -Path "$ENV:LOCALAPPDATA" -Name "yazi" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\yazi" -Force | Out-Null
-Remove-Item -Path "$ENV:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState" -Recurse -Force | Out-Null
+##WINDOWSTERMINAL
+if (Test-Path "$ENV:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState") { 
+    Remove-Item -Path "$ENV:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState" -Recurse -Force | Out-Null
+}
 New-Item -Path "$ENV:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe" -Name "LocalState" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\windowsterminal" -Force | Out-Null
-Remove-Item -Path $ENV:LOCALAPPDATA\Packages\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe\LocalState -Recurse -Force | Out-Null
+##WINGET
+if (Test-Path "$ENV:LOCALAPPDATA\Packages\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe\LocalState") { 
+    Remove-Item -Path "$ENV:LOCALAPPDATA\Packages\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe\LocalState" -Recurse -Force | Out-Null
+}
 New-Item -Path "$ENV:LOCALAPPDATA\Packages\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe" -Name "LocalState" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\winget-config" -Force | Out-Null
-New-Item -Path "C:\Data\repos\" -Name "tools" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\tools" -Force | Out-Null
 
 # Install nerdfonts
 Write-Host "Adding fonts..." -ForegroundColor Yellow
