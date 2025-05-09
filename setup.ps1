@@ -42,6 +42,10 @@ New-ItemProperty -Path $Data.RegKeyPath -Name 'DesktopImageStatus' -Value $Data.
 New-ItemProperty -Path $Data.RegKeyPath -Name 'DesktopImagePath' -Value $WallpaperDest -PropertyType STRING -Force | Out-Null
 New-ItemProperty -Path $Data.RegKeyPath -Name 'DesktopImageUrl' -Value $WallpaperDest -PropertyType STRING -Force | Out-Null
 
+# Start- and Taskbarlayout
+Write-Host "Setting Start- and Taskbarlayout..." -ForegroundColor Yellow
+Copy-Item -Path "$PSScriptRoot\LayoutModification.xml" -Destination "$env:LOCALAPPDATA\Microsoft\Windows\Shell" -Force
+
 # Winget DSC
 Write-Host "Apply DSC..." -ForegroundColor Yellow
 Function Get-WingetCmd {
@@ -63,7 +67,7 @@ Function Get-WingetCmd {
 }
 
 if ($null -eq (Get-WingetCmd)) { 
-    Install-PackageProvider -Name NuGet -Force
+    Install-PackageProvider -Name NuGet -Force -Confirm:$false
     Install-Module -Name Microsoft.WinGet.Client -Force -Confirm:$false
     Repair-WinGetPackageManager -AllUsers -Force
 }
@@ -72,8 +76,8 @@ $url = "https://raw.githubusercontent.com/niklasrst/niklasrst/refs/heads/main/co
 $destination = "$env:TEMP\configuration.dsc.yaml"
 Invoke-WebRequest -Uri $url -OutFile $destination
 
-Start-Process -FilePath "winget.exe" -ArgumentList "configure --enable"
-Start-Process -FilePath "winget.exe" -ArgumentList "configure $env:TEMP\configuration.dsc.yaml --accept-configuration-agreements"
+Start-Process -FilePath "winget.exe" -ArgumentList "configure --enable" -Wait
+Start-Process -FilePath "winget.exe" -ArgumentList "configure $env:TEMP\configuration.dsc.yaml --accept-configuration-agreements" -Wait
 
 # Create symbolic links
 Write-Host "Setting symlinks..." -ForegroundColor Yellow
@@ -113,4 +117,4 @@ Remove-Item -Path $outfile -Force
 
 # Restart
 Write-Host "Rebooting..." -ForegroundColor Yellow
-Restart-Computer -Delay 30 -Force
+Restart-Computer -Force
