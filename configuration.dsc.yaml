@@ -675,13 +675,6 @@ properties:
       settings:
         id: niklasrast.vpntoggle
         source: winget
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: groupconverterPackage
-      directives:
-        description: Install niklasrast.groupconverter
-      settings:
-        id: niklasrast.groupconverter
-        source: winget
     ####################
     #      Repos       #
     #################### 
