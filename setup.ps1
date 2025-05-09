@@ -74,7 +74,7 @@ Start-Process -FilePath "winget.exe" -ArgumentList "configure $env:TEMP\configur
 
 # Clone configs
 Write-Host "Cloning git configs..." -ForegroundColor Yellow
-if (Test-Path "C:\Data\temp\dotfiles") { Remove-Item -Path "C:\Data\temp\dotfiles" -Recurse -Force | Out-Null}
+if (Test-Path "C:\Data\repos\dotfiles") { Remove-Item -Path "C:\Data\repos\dotfiles" -Recurse -Force | Out-Null}
 Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"git clone --recurse-submodules https://github.com/niklasrst/dotfiles C:\Data\repos\dotfiles`"" -Wait
 
 # Create symbolic links
