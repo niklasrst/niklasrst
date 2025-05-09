@@ -688,4 +688,5 @@ properties:
       settings:
         HttpsUrl: https://github.com/niklasrst/dotfiles
         RootDirectory: C:\Data\repos
+        RecurseSubmodules: true
   configurationVersion: 0.2.0
