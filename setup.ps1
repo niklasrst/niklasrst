@@ -46,6 +46,11 @@ if (Test-Path "$env:LOCALAPPDATA\Microsoft\Windows\Shell\LayoutModification.json
 }
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/niklasrst/niklasrst/refs/heads/main/LayoutModification.json" -OutFile "$env:LOCALAPPDATA\Microsoft\Windows\Shell\LayoutModification.json"
 
+# Add PATH variables
+#Write-Host "Adding PATH variables..." -ForegroundColor Yellow
+#[System.Environment]::SetEnvironmentVariable("Path", $machine_path, [System.EnvironmentVariableTarget]::Machine)
+#[System.Environment]::SetEnvironmentVariable("Path", $user_path, [System.EnvironmentVariableTarget]::User)
+
 # Apply Winget DSC
 Write-Host "Apply DSC..." -ForegroundColor Yellow
 Function Get-WingetCmd {
