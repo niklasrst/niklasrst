@@ -613,6 +613,13 @@ properties:
         id: WiresharkFoundation.Wireshark
         source: winget
     - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: npcapPackage
+      directives:
+        description: Install Insecure.Npcap
+      settings:
+        id: Insecure.Npcap
+        source: winget
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: appleMusicPackage
       directives:
         description: Install Apple Music
