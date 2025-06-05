@@ -689,4 +689,11 @@ properties:
       settings:
         id: niklasrast.vpntoggle
         source: winget
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: translucentTBPackage
+      directives:
+        description: Install TranslucentTB
+      settings:
+        id: 9PF4KZ2VN4W9
+        source: msstore
   configurationVersion: 0.2.0
