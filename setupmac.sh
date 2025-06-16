@@ -22,9 +22,37 @@
 
 #requires -RunAsAdministrator
 
+#################
+## CONFIG
+#################
+### DARKMODE
+
+### WALLPAPER
+https://raw.githubusercontent.com/niklasrst/niklasrst/refs/heads/main/bg.jpg
+
+#################
+## FOLDERS
+#################
+### REPO
+
+#################
 ## APPS
+#################
 ### HOMEBREW
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 echo >> /$HOME/.zprofile
 echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /$HOME/.zprofile
 eval "$(/opt/homebrew/bin/brew shellenv)"
+
+### PWSH
+#### PWSH MODULES
+### VSCODE
+### OhMyPosh
+### KeePass
+### lazygit
+
+#################
+## GIT REPOS
+#################
+### DOTFILES (GITHUB)
+### DOCS (DEVOPS)
