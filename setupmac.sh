@@ -28,7 +28,20 @@
 ### DARKMODE
 
 ### WALLPAPER
-https://raw.githubusercontent.com/niklasrst/niklasrst/refs/heads/main/bg.jpg
+IMAGE_URL="https://raw.githubusercontent.com/niklasrst/niklasrst/refs/heads/main/bg.jpg"
+IMAGE_PATH="$HOME/Pictures/bg.jpg"
+mkdir -p "$HOME/Pictures"
+curl -o "$IMAGE_PATH" -L "$IMAGE_URL"
+spaces=$(osascript -e 'tell application "System Events" to get the id of every desktop')
+for space in $spaces; do
+    osascript <<EOD
+tell application "System Events"
+    tell desktop id $space
+        set picture to "$IMAGE_PATH"
+    end tell
+end tell
+EOD
+done
 
 #################
 ## FOLDERS
