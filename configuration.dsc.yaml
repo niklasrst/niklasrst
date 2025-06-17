@@ -696,4 +696,11 @@ properties:
       settings:
         id: 9PF4KZ2VN4W9
         source: msstore
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: obsPackage
+      directives:
+        description: Install OBS Studio
+      settings:
+        id: OBSProject.OBSStudio
+        source: winget
   configurationVersion: 0.2.0
