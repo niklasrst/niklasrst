@@ -67,9 +67,10 @@ brew install --cask git-credential-manager
 
 ### PWSH
 brew install --cask powershell
-
 #### PWSH MODULES
+
 ### VSCODE
+brew install --cask visual-studio-code
 #### In VSCODE search for `Shell Command`
 
 ### OhMyPosh
@@ -86,6 +87,18 @@ brew install superfile
 
 ### WindowsApp
 brew install --cask windows-app
+
+### Azure CLI
+brew install azure-cli
+
+### Microsoft DOTnet
+brew install dotnet
+
+### pandoc
+brew install pandoc
+
+### ripgrep
+brew install ripgrep
 
 #################
 ## GIT REPOS
