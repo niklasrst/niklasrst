@@ -44,14 +44,14 @@ end tell
 EOD
 done
 
-### CONFIGS FOLDER
-mkdir -p ~/.config
-
 #################
 ## FOLDERS
 #################
 ### REPO
 mkdir -p ~/repos
+
+### CONFIGS FOLDER
+mkdir -p ~/.config
 
 #################
 ## APPS
