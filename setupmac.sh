@@ -88,6 +88,27 @@ brew install superfile
 ### WindowsApp
 brew install --cask windows-app
 
+### YubiKey Mgr
+brew install --cask yubico-yubikey-manager
+
+### Wireshark
+brew install wireshark
+
+### OBS
+brew install --cask obs
+
+### JABRA DIRECT
+brew install --cask jabra-direct
+
+### Google Chrome
+brew install --cask google-chrome
+
+### Adobe Creative Cloud
+brew install --cask adobe-creative-cloud
+
+### UTM
+brew install --cask utm
+
 ### Azure CLI
 brew install azure-cli
 
