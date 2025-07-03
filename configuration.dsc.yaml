@@ -240,6 +240,14 @@ properties:
     #   PWSH Modules   #
     ####################
     - resource: PowerShellModule/PSModuleResource
+      id: Microsoft.EntraPwshModule
+      directives:
+        description: Install Microsoft.Entra PWSH Module
+        allowPrerelease: true
+      settings:
+        Module_Name: Microsoft.Entra
+        Ensure: Present
+    - resource: PowerShellModule/PSModuleResource
       id: Microsoft.AzPwshModule
       directives:
         description: Install Microsoft.Az PWSH Module
