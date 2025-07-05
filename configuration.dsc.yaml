@@ -440,14 +440,14 @@ properties:
       settings:
         id: Microsoft.ADKPEAddon
         source: winget
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: goPackage
-      directives:
-        description: Install GO
-        allowPrerelease: true
-      settings:
-        id: GoLang.Go
-        source: winget
+    #- resource: Microsoft.WinGet.DSC/WinGetPackage
+    #  id: goPackage
+    #  directives:
+    #    description: Install GO
+    #    allowPrerelease: true
+    #  settings:
+    #    id: GoLang.Go
+    #    source: winget
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: starshipPackage
       directives:
@@ -697,13 +697,13 @@ properties:
       settings:
         id: niklasrast.vpntoggle
         source: winget
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: translucentTBPackage
-      directives:
-        description: Install TranslucentTB
-      settings:
-        id: 9PF4KZ2VN4W9
-        source: msstore
+    #- resource: Microsoft.WinGet.DSC/WinGetPackage
+    #  id: translucentTBPackage
+    #  directives:
+    #    description: Install TranslucentTB
+    #  settings:
+    #    id: 9PF4KZ2VN4W9
+    #    source: msstore
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: obsPackage
       directives:
