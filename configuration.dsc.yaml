@@ -247,23 +247,14 @@ properties:
       settings:
         Module_Name: Microsoft.Entra
         Ensure: Present
-    - resource: PowerShellModule/PSModuleResource
-      id: Microsoft.AzPwshModule
-      directives:
-        description: Install Microsoft.Az PWSH Module
-        allowPrerelease: true
-      settings:
-        Module_Name: Az
-        Ensure: Present
-    - resource: PowerShellModule/PSModuleResource
-      id: Microsoft.Graph.AuthenticationPwshModule
-      directives:
-        description: Install Microsoft.Graph.Authentication PWSH Module
-        allowPrerelease: true
-      settings:
-        Module_Name: Microsoft.Graph.Authentication
-        #RequiredVersion: 5.6.1
-        Ensure: Present
+    #- resource: PowerShellModule/PSModuleResource
+    #  id: Microsoft.AzPwshModule
+    #  directives:
+    #    description: Install Microsoft.Az PWSH Module
+    #    allowPrerelease: true
+    #  settings:
+    #    Module_Name: Az
+    #    Ensure: Present
     - resource: PowerShellModule/PSModuleResource
       id: Microsoft.Graph.DeviceManagementPwshModule
       directives:
@@ -287,14 +278,6 @@ properties:
         allowPrerelease: true
       settings:
         Module_Name: Microsoft.Graph.DeviceManagement.Enrollment
-        Ensure: Present
-    - resource: PowerShellModule/PSModuleResource
-      id: Microsoft.Graph.Identity.DirectoryManagementPwshModule
-      directives:
-        description: Install Microsoft.Graph.Identity.DirectoryManagement PWSH Module
-        allowPrerelease: true
-      settings:
-        Module_Name: Microsoft.Graph.Identity.DirectoryManagement
         Ensure: Present
     - resource: PowerShellModule/PSModuleResource
       id: Microsoft.WinGet.ClientPwshModule
