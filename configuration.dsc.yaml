@@ -343,6 +343,14 @@ properties:
       settings:
         Module_Name: OSD
         Ensure: Present
+    - resource: PowerShellModule/PSModuleResource
+      id: PSABMPwshModule
+      directives:
+        description: Install PSABM PWSH Module
+        allowPrerelease: true
+      settings:
+        Module_Name: PSABM
+        Ensure: Present
     ####################
     #       Apps       #
     ####################
