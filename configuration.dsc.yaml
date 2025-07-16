@@ -386,14 +386,14 @@ properties:
       settings:
         id: DominikReichl.KeePass
         source: winget
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: chromePackage
-      directives:
-        description: Install Google Chrome EXE
-        allowPrerelease: true
-      settings:
-        id: Google.Chrome.EXE
-        source: winget
+    #- resource: Microsoft.WinGet.DSC/WinGetPackage
+    #  id: chromePackage
+    #  directives:
+    #    description: Install Google Chrome EXE
+    #    allowPrerelease: true
+    #  settings:
+    #    id: Google.Chrome.EXE
+    #    source: winget
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: vscodePackage
       directives:
