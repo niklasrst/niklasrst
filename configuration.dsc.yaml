@@ -256,28 +256,28 @@ properties:
     #    Module_Name: Az
     #    Ensure: Present
     - resource: PowerShellModule/PSModuleResource
-      id: Microsoft.Graph.DeviceManagementPwshModule
+      id: Microsoft.Graph.Beta.DeviceManagementPwshModule
       directives:
-        description: Install Microsoft.Graph.DeviceManagement PWSH Module
+        description: Install Microsoft.Graph.Beta.DeviceManagement PWSH Module
         allowPrerelease: true
       settings:
-        Module_Name: Microsoft.Graph.DeviceManagement
+        Module_Name: Microsoft.Graph.Beta.DeviceManagement
         Ensure: Present
     - resource: PowerShellModule/PSModuleResource
-      id: Microsoft.Graph.DeviceManagement.AdministrationPwshModule
+      id: Microsoft.Graph.Beta.DeviceManagement.AdministrationPwshModule
       directives:
-        description: Install Microsoft.Graph.DeviceManagement.Administration PWSH Module
+        description: Install Microsoft.Graph.Beta.DeviceManagement.Administration PWSH Module
         allowPrerelease: true
       settings:
-        Module_Name: Microsoft.Graph.DeviceManagement.Administration
+        Module_Name: Microsoft.Graph.Beta.DeviceManagement.Administration
         Ensure: Present
     - resource: PowerShellModule/PSModuleResource
-      id: Microsoft.Graph.DeviceManagement.EnrollmentPwshModule
+      id: Microsoft.Graph.Beta.DeviceManagement.EnrollmentPwshModule
       directives:
-        description: Install Microsoft.Graph.DeviceManagement.Enrollment PWSH Module
+        description: Install Microsoft.Graph.Beta.DeviceManagement.Enrollment PWSH Module
         allowPrerelease: true
       settings:
-        Module_Name: Microsoft.Graph.DeviceManagement.Enrollment
+        Module_Name: Microsoft.Graph.Beta.DeviceManagement.Enrollment
         Ensure: Present
     - resource: PowerShellModule/PSModuleResource
       id: Microsoft.WinGet.ClientPwshModule
