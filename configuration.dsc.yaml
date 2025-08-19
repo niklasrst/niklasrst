@@ -351,6 +351,14 @@ properties:
       settings:
         Module_Name: PSABM
         Ensure: Present
+    - resource: PowerShellModule/PSModuleResource
+      id: IntuneDebugPwshModule
+      directives:
+        description: Install IntuneDebug PWSH Module
+        allowPrerelease: true
+      settings:
+        Module_Name: IntuneDebug
+        Ensure: Present
     ####################
     #       Apps       #
     ####################
