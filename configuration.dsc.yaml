@@ -280,14 +280,6 @@ properties:
         Module_Name: Microsoft.Graph.Beta.DeviceManagement.Enrollment
         Ensure: Present
     - resource: PowerShellModule/PSModuleResource
-      id: Microsoft.Graph.IntunePwshModule
-      directives:
-        description: Install Microsoft.Graph.Intune PWSH Module
-        allowPrerelease: true
-      settings:
-        Module_Name: Microsoft.Graph.Intune
-        Ensure: Present
-    - resource: PowerShellModule/PSModuleResource
       id: Microsoft.WinGet.ClientPwshModule
       directives:
         description: Install Microsoft.WinGet.Client PWSH Module
