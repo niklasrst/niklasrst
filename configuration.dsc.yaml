@@ -211,17 +211,17 @@ properties:
           $null -ne $(dism /online /get-featureinfo /featurename:Microsoft-Hyper-V-All | sls "Enabled")
         SetScript: |
           dism /online /enable-feature /featurename:Microsoft-Hyper-V-All /norestart
-    - resource: xPSDesiredStateConfiguration/xScript
-      id: rsatTools
-      directives:
-        description: Enable RSAT Tools
-      settings:
-        GetScript: |
-          @{}
-        TestScript: |
-          $(Get-WindowsCapability -Online -Name *RSAT* | ? State -ne "Installed" | measure).Count -eq 0
-        SetScript: |
-          Get-WindowsCapability -Online -Name *RSAT* | Add-WindowsCapability -Online
+    #- resource: xPSDesiredStateConfiguration/xScript
+    #  id: rsatTools
+    #  directives:
+    #    description: Enable RSAT Tools
+    #  settings:
+    #    GetScript: |
+    #      @{}
+    #    TestScript: |
+    #      $(Get-WindowsCapability -Online -Name *RSAT* | ? State -ne "Installed" | measure).Count -eq 0
+    #    SetScript: |
+    #      Get-WindowsCapability -Online -Name *RSAT* | Add-WindowsCapability -Online
     ####################
     #  Scripted Apps   #
     ####################
@@ -394,14 +394,14 @@ properties:
       settings:
         id: DominikReichl.KeePass
         source: winget
-    #- resource: Microsoft.WinGet.DSC/WinGetPackage
-    #  id: chromePackage
-    #  directives:
-    #    description: Install Google Chrome EXE
-    #    allowPrerelease: true
-    #  settings:
-    #    id: Google.Chrome.EXE
-    #    source: winget
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: chromePackage
+      directives:
+        description: Install Google Chrome EXE
+        allowPrerelease: true
+      settings:
+        id: Google.Chrome.EXE
+        source: winget
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: vscodePackage
       directives:
@@ -410,21 +410,21 @@ properties:
       settings:
         id: Microsoft.VisualStudioCode
         source: winget
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: vsBuildToolsPackage
-      directives:
-        description: Install Microsoft VisualStudio BuildTools
-      settings:
-        id: Microsoft.VisualStudio.2022.BuildTools
-        source: winget
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: vsPackage
-      directives:
-        description: Install Visual Studio 2022 Professional
-        allowPrerelease: true
-      settings:
-        id: Microsoft.VisualStudio.2022.Professional
-        source: winget
+    #- resource: Microsoft.WinGet.DSC/WinGetPackage
+    #  id: vsBuildToolsPackage
+    #  directives:
+    #    description: Install Microsoft VisualStudio BuildTools
+    #  settings:
+    #    id: Microsoft.VisualStudio.2022.BuildTools
+    #    source: winget
+    #- resource: Microsoft.WinGet.DSC/WinGetPackage
+    #  id: vsPackage
+    #  directives:
+    #    description: Install Visual Studio 2022 Professional
+    #    allowPrerelease: true
+    #  settings:
+    #    id: Microsoft.VisualStudio.2022.Professional
+    #    source: winget
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: windowsADKPackage
       directives:
@@ -447,14 +447,14 @@ properties:
     #  settings:
     #    id: GoLang.Go
     #    source: winget
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: starshipPackage
-      directives:
-        description: Install Starship
-        allowPrerelease: true
-      settings:
-        id: Starship.Starship
-        source: winget
+    #- resource: Microsoft.WinGet.DSC/WinGetPackage
+    #  id: starshipPackage
+    #  directives:
+    #    description: Install Starship
+    #    allowPrerelease: true
+    #  settings:
+    #    id: Starship.Starship
+    #    source: winget
     #- resource: Microsoft.WinGet.DSC/WinGetPackage
     #  id: neovimPackage
     #  directives:
@@ -626,13 +626,13 @@ properties:
       settings:
         id: Insecure.Npcap
         source: winget
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: appleMusicPackage
-      directives:
-        description: Install Apple Music
-      settings:
-        id: 9PFHDD62MXS1
-        source: msstore
+    #- resource: Microsoft.WinGet.DSC/WinGetPackage
+    #  id: appleMusicPackage
+    #  directives:
+    #    description: Install Apple Music
+    #  settings:
+    #    id: 9PFHDD62MXS1
+    #    source: msstore
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: adobePhotoshopPackage
       directives:
