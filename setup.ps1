@@ -25,6 +25,10 @@
 #>
 #requires -RunAsAdministrator
 
+# Configure Winget Package Mgr
+Install-Module -Name Microsoft.WinGet.Client -Force
+Repair-WinGetPackageManager -AllUsers
+
 # Set wallpaper
 Write-Host "Setting wallpaper..." -ForegroundColor Yellow
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/niklasrst/niklasrst/refs/heads/main/bg.jpg" -OutFile "$env:TEMP\Wallpaper.jpg"
@@ -150,4 +154,5 @@ Remove-Item -Path $outfile -Force
 
 # Restart
 Write-Host "Rebooting..." -ForegroundColor Yellow
+
 Restart-Computer -Force
