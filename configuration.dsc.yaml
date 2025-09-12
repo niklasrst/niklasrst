@@ -256,28 +256,12 @@ properties:
     #    Module_Name: Az
     #    Ensure: Present
     - resource: PowerShellModule/PSModuleResource
-      id: Microsoft.Graph.Beta.DeviceManagementPwshModule
+      id: MicrosoftGraphBetaPwshModule
       directives:
-        description: Install Microsoft.Graph.Beta.DeviceManagement PWSH Module
+        description: Install Microsoft.Graph.Beta PWSH Module
         allowPrerelease: true
       settings:
-        Module_Name: Microsoft.Graph.Beta.DeviceManagement
-        Ensure: Present
-    - resource: PowerShellModule/PSModuleResource
-      id: Microsoft.Graph.Beta.DeviceManagement.AdministrationPwshModule
-      directives:
-        description: Install Microsoft.Graph.Beta.DeviceManagement.Administration PWSH Module
-        allowPrerelease: true
-      settings:
-        Module_Name: Microsoft.Graph.Beta.DeviceManagement.Administration
-        Ensure: Present
-    - resource: PowerShellModule/PSModuleResource
-      id: Microsoft.Graph.Beta.DeviceManagement.EnrollmentPwshModule
-      directives:
-        description: Install Microsoft.Graph.Beta.DeviceManagement.Enrollment PWSH Module
-        allowPrerelease: true
-      settings:
-        Module_Name: Microsoft.Graph.Beta.DeviceManagement.Enrollment
+        Module_Name: Microsoft.Graph.Beta
         Ensure: Present
     - resource: PowerShellModule/PSModuleResource
       id: Microsoft.WinGet.ClientPwshModule
@@ -567,22 +551,22 @@ properties:
     #  settings:
     #    id: sxyazi.yazi
     #    source: winget
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: pythonPackage
-      directives:
-        description: Install Python
-        allowPrerelease: true
-      settings:
-        id: Python.Python.3.13
-        source: winget
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: nodejsPackage
-      directives:
-        description: Install NodeJS
-        allowPrerelease: true
-      settings:
-        id: OpenJS.NodeJS
-        source: winget   
+    #- resource: Microsoft.WinGet.DSC/WinGetPackage
+    #  id: pythonPackage
+    #  directives:
+    #    description: Install Python
+    #    allowPrerelease: true
+    #  settings:
+    #    id: Python.Python.3.13
+    #    source: winget
+    #- resource: Microsoft.WinGet.DSC/WinGetPackage
+    #  id: nodejsPackage
+    #  directives:
+    #    description: Install NodeJS
+    #    allowPrerelease: true
+    #  settings:
+    #    id: OpenJS.NodeJS
+    #    source: winget   
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: powertoysPackage
       directives:
