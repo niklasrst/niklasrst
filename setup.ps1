@@ -151,5 +151,5 @@ Remove-Item -Path $outfile -Force
 # Restart
 Write-Host "Rebooting..." -ForegroundColor Yellow
 
-Restart-Computer -Force
+#Restart-Computer -Force
 
