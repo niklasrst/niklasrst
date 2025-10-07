@@ -43,6 +43,17 @@ properties:
         ValueType: "Dword"
         Force: true
     - resource: xPSDesiredStateConfiguration/xRegistry
+      id: launchToThisPC
+      directives:
+        description: Configure Explorer to launch at ThisPC
+      settings:
+        Ensure: "Present"
+        Key: 'HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
+        ValueName: "LaunchTo"
+        ValueData: "1"
+        ValueType: "Dword"
+        Force: true
+    - resource: xPSDesiredStateConfiguration/xRegistry
       id: showFileExtensions
       directives:
         description: Show File extensions
@@ -148,7 +159,7 @@ properties:
         GetScript: |
           @{}
         TestScript: |
-          $null -ne $(Get-AppxPackage -AllUsers -Name Microsoft.MicrosoftSolitaireCollection)
+          $null -eq $(Get-AppxPackage -AllUsers -Name Microsoft.MicrosoftSolitaireCollection)
         SetScript: |
           $bloatwareapps = @( 
               "Microsoft.549981C3F5F10"
@@ -181,7 +192,7 @@ properties:
         GetScript: |
           @{}
         TestScript: |
-          Test-Path -Path "C:\Data"
+          $true -eq (Test-Path -Path "C:\Data")
         SetScript: |
           New-Item -Path "C:\" -Name "Data" -ItemType Directory -Force
           New-Item -Path "C:\Data" -Name "repos" -ItemType Directory -Force
@@ -225,17 +236,6 @@ properties:
     ####################
     #  Scripted Apps   #
     ####################
-    - resource: xPSDesiredStateConfiguration/xScript
-      id: superfileScriptPackage
-      directives:
-        description: Install superfile cli
-      settings:
-        GetScript: |
-          @{}
-        TestScript: |
-          @{}
-        SetScript: |
-          powershell -ExecutionPolicy Bypass -Command "Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://superfile.netlify.app/install.ps1'))"
     ####################
     #   PWSH Modules   #
     ####################
@@ -247,14 +247,14 @@ properties:
       settings:
         Module_Name: Microsoft.Entra
         Ensure: Present
-    #- resource: PowerShellModule/PSModuleResource
-    #  id: Microsoft.AzPwshModule
-    #  directives:
-    #    description: Install Microsoft.Az PWSH Module
-    #    allowPrerelease: true
-    #  settings:
-    #    Module_Name: Az
-    #    Ensure: Present
+    - resource: PowerShellModule/PSModuleResource
+      id: Microsoft.AzPwshModule
+      directives:
+        description: Install Microsoft.Az PWSH Module
+        allowPrerelease: true
+      settings:
+        Module_Name: Az
+        Ensure: Present
     - resource: PowerShellModule/PSModuleResource
       id: MicrosoftGraphBetaPwshModule
       directives:
@@ -575,13 +575,13 @@ properties:
       settings:
         id: Microsoft.PowerToys
         source: winget
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: Microsoft.Sqlcmd
-      directives:
-        description: Install Microsoft Sqlcmd
-      settings:
-        id: Microsoft.Sqlcmd
-        source: winget
+    #- resource: Microsoft.WinGet.DSC/WinGetPackage
+    #  id: Microsoft.Sqlcmd
+    #  directives:
+    #    description: Install Microsoft Sqlcmd
+    #  settings:
+    #    id: Microsoft.Sqlcmd
+    #    source: winget
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: sysinternalsPackage
       directives:
