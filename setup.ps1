@@ -23,47 +23,15 @@
 .AUTHOR
     Niklas Rast
 #>
-#requires -RunAsAdministrator
 
-# Set wallpaper
-Write-Host "Setting wallpaper..." -ForegroundColor Yellow
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/niklasrst/niklasrst/refs/heads/main/bg.jpg" -OutFile "$env:TEMP\Wallpaper.jpg"
-New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Force -ErrorAction SilentlyContinue | Out-Null
-New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Name 'DesktopImageStatus' -Value "1" -PropertyType DWORD -Force | Out-Null
-New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Name 'DesktopImagePath' -Value "$env:TEMP\Wallpaper.jpg" -PropertyType STRING -Force | Out-Null
-New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Name 'DesktopImageUrl' -Value "$env:TEMP\Wallpaper.jpg" -PropertyType STRING -Force | Out-Null
-
-# Start- and Taskbarlayout
-Write-Host "Setting Taskbarlayout..." -ForegroundColor Yellow
-if (Test-Path "$env:LOCALAPPDATA\Microsoft\Windows\Shell\LayoutModification.xml") {
-    Remove-Item -Path "$env:LOCALAPPDATA\Microsoft\Windows\Shell\LayoutModification.xml" -Force
-}
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/niklasrst/niklasrst/refs/heads/main/LayoutModification.xml" -OutFile "$env:LOCALAPPDATA\Microsoft\Windows\Shell\LayoutModification.xml"
-
-Write-Host "Setting Startlayout..." -ForegroundColor Yellow
-if (Test-Path "$env:LOCALAPPDATA\Microsoft\Windows\Shell\LayoutModification.json") {
-    Remove-Item -Path "$env:LOCALAPPDATA\Microsoft\Windows\Shell\LayoutModification.json" -Force
-}
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/niklasrst/niklasrst/refs/heads/main/LayoutModification.json" -OutFile "$env:LOCALAPPDATA\Microsoft\Windows\Shell\LayoutModification.json"
-
-# Add PATH variables
-#Write-Host "Adding PATH variables..." -ForegroundColor Yellow
-#[System.Environment]::SetEnvironmentVariable("Path", $machine_path, [System.EnvironmentVariableTarget]::Machine)
-#[System.Environment]::SetEnvironmentVariable("Path", $user_path, [System.EnvironmentVariableTarget]::User)
-
-# Apply Winget DSC
-Write-Host "Apply DSC..." -ForegroundColor Yellow
+# PRE-CHECKS
 Function Get-WingetCmd {
     $WingetCmd = $null
-    #Get WinGet Path
     try {
-        #Get Admin Context Winget Location
         $WingetInfo = (Get-Item "$env:ProgramFiles\WindowsApps\Microsoft.DesktopAppInstaller_*_8wekyb3d8bbwe\winget.exe").VersionInfo | Sort-Object -Property FileVersionRaw
-        #If multiple versions, pick most recent one
         $WingetCmd = $WingetInfo[-1].FileName
     }
     catch {
-        #Get User context Winget Location
         if (Test-Path "$env:LocalAppData\Microsoft\WindowsApps\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe\winget.exe") {
             $WingetCmd = "$env:LocalAppData\Microsoft\WindowsApps\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe\winget.exe"
         }
@@ -77,79 +45,77 @@ if ($null -eq (Get-WingetCmd)) {
     Repair-WinGetPackageManager -AllUsers -Force
 }
 
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/niklasrst/niklasrst/refs/heads/main/configuration.dsc.yaml" -OutFile "$env:TEMP\configuration.dsc.yaml"
-Start-Process -FilePath "winget.exe" -ArgumentList "configure --enable" -Wait
-Start-Process -FilePath "winget.exe" -ArgumentList "configure $env:TEMP\configuration.dsc.yaml --accept-configuration-agreements" -Wait
+$dotfiles = "C:\Data\repos\dotfiles"
+$user = "niklasrst"
 
-# Clone configs
-Write-Host "Cloning git configs..." -ForegroundColor Yellow
-if (Test-Path "C:\Data\repos\dotfiles") { Remove-Item -Path "C:\Data\repos\dotfiles" -Recurse -Force | Out-Null}
-Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"git clone --recurse-submodules https://github.com/niklasrst/dotfiles C:\Data\repos\dotfiles`"" -Wait
+if ($false -eq (Test-Path -Path C:\Users\$user)) {
+    Write-Error "User $($user) not found on $($ENV:COMPUTERNAME)"
+    break
+}
 
-# Create symbolic links
-Write-Host "Setting symlinks..." -ForegroundColor Yellow
-## PWSH5
-if (Test-Path "$ENV:OneDrive\Dokumente\WindowsPowerShell") { 
-    Remove-Item -Path "$ENV:OneDrive\Dokumente\WindowsPowerShell" -Recurse -Force | Out-Null
-}
-New-Item -Path "$ENV:OneDrive\Dokumente\WindowsPowerShell" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\pwsh" -Force | Out-Null
-## PWSH7
-if (Test-Path "$ENV:OneDrive\Dokumente\PowerShell") { 
-    Remove-Item -Path "$ENV:OneDrive\Dokumente\PowerShell" -Recurse -Force | Out-Null
-}
-New-Item -Path "$ENV:OneDrive\Dokumente\PowerShell" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\pwsh" -Force | Out-Null
-##GIT
-if (Test-Path "$ENV:USERPROFILE\.gitconfig") { 
-    Remove-Item -Path "$ENV:USERPROFILE\.gitconfig" -Force | Out-Null
-    Remove-Item -Path "$ENV:USERPROFILE\.gitconfig-azure" -Force | Out-Null
-    Remove-Item -Path "$ENV:USERPROFILE\.gitconfig-github" -Force | Out-Null
-}
-New-Item -Path "$ENV:USERPROFILE\.gitconfig" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\.gitconfig" -Force | Out-Null
-New-Item -Path "$ENV:USERPROFILE\.gitconfig-azure" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\.gitconfig-azure" -Force | Out-Null
-New-Item -Path "$ENV:USERPROFILE\.gitconfig-github" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\.gitconfig-github" -Force | Out-Null
-##NVIM
-if (Test-Path "$ENV:LOCALAPPDATA\nvim") { 
-    Remove-Item -Path "$ENV:LOCALAPPDATA\nvim" -Recurse -Force | Out-Null
-}
-New-Item -Path "$ENV:LOCALAPPDATA" -Name "nvim" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\nvim" -Force | Out-Null
-##SUPERFILE
-if (Test-Path "$ENV:LOCALAPPDATA\superfile") { 
-    Remove-Item -Path "$ENV:LOCALAPPDATA\superfile" -Recurse -Force | Out-Null
-}
-New-Item -Path "$ENV:LOCALAPPDATA" -Name "superfile" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\nvim" -Force | Out-Null
-##YAZI
-if (Test-Path "$ENV:LOCALAPPDATA\yazi") { 
-    Remove-Item -Path "$ENV:LOCALAPPDATA\yazi" -Recurse -Force | Out-Null
-}
-New-Item -Path "$ENV:LOCALAPPDATA" -Name "yazi" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\yazi" -Force | Out-Null
-##WINDOWSTERMINAL
-if (Test-Path "$ENV:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState") { 
-    Remove-Item -Path "$ENV:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState" -Recurse -Force | Out-Null
-}
-New-Item -Path "$ENV:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe" -Name "LocalState" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\windowsterminal" -Force | Out-Null
-##WINGET
-if (Test-Path "$ENV:LOCALAPPDATA\Packages\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe\LocalState") { 
-    Remove-Item -Path "$ENV:LOCALAPPDATA\Packages\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe\LocalState" -Recurse -Force | Out-Null
-}
-New-Item -Path "$ENV:LOCALAPPDATA\Packages\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe" -Name "LocalState" -ItemType SymbolicLink -Value "C:\Data\repos\dotfiles\winget-config" -Force | Out-Null
+# APPLY DSC
+if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+    Write-Output "Running in Admin mode for SYSTEM configuration."
 
-# Install nerdfonts
-Write-Host "Adding fonts..." -ForegroundColor Yellow
-$font_name = "CascadiaCode"
-$archive = "$font_name.zip"
-$outfile = "$env:TEMP\$archive"
-$user_font_dir = "$env:LOCALAPPDATA\Microsoft\Windows\Fonts"
-$user_font_reg = "HKCU:\Software\Microsoft\Windows NT\CurrentVersion\Fonts"
+    ## Winget DSC
+    Start-Process -FilePath "winget.exe" -ArgumentList "configure --enable" -Wait
+    Start-Process -FilePath "winget.exe" -ArgumentList "configure $dotfiles\client_configuration.dsc.yaml --accept-configuration-agreements" -Wait
 
-Invoke-WebRequest -Uri "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$archive" -OutFile $outfile
+    if ($false -eq (Test-Path -Path $dotfiles)) {
+        Write-Error "$($dotfiles) not found on $($ENV:COMPUTERNAME)"
+        break
+    }
 
-Expand-Archive -Path $outfile -DestinationPath $user_font_dir -Force | Where-Object Name -like "*.ttf" | Foreach-Object {
-    New-ItemProperty -Path $user_font_reg -Name $_.Name -Value $_.FullName -PropertyType String -Force | Out-Null
+    ## Setup symlinks
+    $configFiles = @{
+        "$user\.gitconfig" = "$dotfiles\.gitconfig"
+        "$user\.gitconfig-azure" = "$dotfiles\.gitconfig-azure"
+        "$user\.gitconfig-github" = "$dotfiles\.gitconfig-github"
+        "$([Environment]::GetFolderPath([Environment+SpecialFolder]::Personal))\PowerShell" = "$dotfiles\pwsh\Microsoft.PowerShell_profile.ps1"
+        "$([Environment]::GetFolderPath([Environment+SpecialFolder]::Personal))\WindowsPowerShell" = "$dotfiles\pwsh\Microsoft.PowerShell_profile.ps1"
+        "C:\Users\$user\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" = "$dotfiles\windowsterminal\settings.json"
+        "C:\Users\$user\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\state.json" = "$dotfiles\windowsterminal\state.json"
+    }
+
+    $configFiles.Keys | Where-Object { Test-Path -Path $_ } | ForEach-Object { Remove-Item -Path $_ -Force }
+    $configFiles.Keys | ForEach-Object {
+        $null = New-Item -ItemType SymbolicLink -Path $_ -Target $configFiles[$_] -Force
+    }
+    
+    ## Set wallpaper
+    New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Force -ErrorAction SilentlyContinue | Out-Null
+    New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Name 'DesktopImageStatus' -Value "1" -PropertyType DWORD -Force | Out-Null
+    New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Name 'DesktopImagePath' -Value "$dotfiles\bg.jpg" -PropertyType STRING -Force | Out-Null
+    New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Name 'DesktopImageUrl' -Value "$dotfiles\bg.jpg" -PropertyType STRING -Force | Out-Null
+
+    ## Add PATH variables
+    $machine_path = Get-Content -Path "$dotfiles\path_machine.txt"
+    [System.Environment]::SetEnvironmentVariable("Path", $machine_path, [System.EnvironmentVariableTarget]::Machine)
+    $user_path = $(Get-Content -Path "$dotfiles\path_user.txt") -replace "<home>", $HOME
+    [System.Environment]::SetEnvironmentVariable("Path", $user_path, [System.EnvironmentVariableTarget]::User)
+} else {
+    Write-Output "Running in User mode for customizations."
+
+    ## Winget DSC
+    Start-Process -FilePath "winget.exe" -ArgumentList "configure --enable" -Wait
+    Start-Process -FilePath "winget.exe" -ArgumentList "configure $dotfiles\user_configuration.dsc.yaml --accept-configuration-agreements" -Wait
+
+    if ($false -eq (Test-Path -Path $dotfiles)) {
+        Write-Error "$($dotfiles) not found on $($ENV:COMPUTERNAME)"
+        break
+    }
+
+    ## Add PATH variables
+    $user_path = $(Get-Content -Path "$dotfiles\path_user.txt")
+    [System.Environment]::SetEnvironmentVariable("Path", $user_path, [System.EnvironmentVariableTarget]::User) -replace "<home>", $HOME
+
+    ## Add custom startmenu
+    Copy-Item -Path "$dotfiles\LayoutModification.xml" -Destination "$env:LOCALAPPDATA\Microsoft\Windows\Shell" -Force
 }
-Remove-Item -Path $outfile -Force
 
-# Restart
-Write-Host "Rebooting..." -ForegroundColor Yellow
-
-#Restart-Computer -Force
-
+do {
+    $response = Read-Host "Reboot now? (Y/N)"
+} until ($response -match '^[YN]$')
+if ($response -eq 'Y') {
+    Restart-Computer
+}
