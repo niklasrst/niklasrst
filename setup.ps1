@@ -25,27 +25,15 @@
 #>
 
 # PRE-CHECKS
-Function Get-WingetCmd {
-    $WingetCmd = $null
-    try {
-        $WingetInfo = (Get-Item "$env:ProgramFiles\WindowsApps\Microsoft.DesktopAppInstaller_*_8wekyb3d8bbwe\winget.exe").VersionInfo | Sort-Object -Property FileVersionRaw
-        $WingetCmd = $WingetInfo[-1].FileName
-    }
-    catch {
-        if (Test-Path "$env:LocalAppData\Microsoft\WindowsApps\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe\winget.exe") {
-            $WingetCmd = "$env:LocalAppData\Microsoft\WindowsApps\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe\winget.exe"
-        }
-    }
-    return $WingetCmd
-}
-
-if ($null -eq (Get-WingetCmd)) { 
-    Install-PackageProvider -Name NuGet -Force -Confirm:$false
-    Install-Module -Name Microsoft.WinGet.Client -Force -Confirm:$false
-    Repair-WinGetPackageManager -AllUsers -Force
-}
+Install-PackageProvider -Name NuGet -Force -Confirm:$false
+Install-Module -Name Microsoft.WinGet.Client -Force -Confirm:$false
+Repair-WinGetPackageManager -AllUsers -Force
 
 $dotfiles = "C:\Data\repos\dotfiles"
+if ($false -eq (Test-Path -Path $dotfiles)) {
+    winget install git.git
+    git clone https://github.com/niklasrst/dotfiles.git $dotfiles
+}
 
 # APPLY DSC
 if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
