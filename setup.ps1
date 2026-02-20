@@ -46,12 +46,6 @@ if ($null -eq (Get-WingetCmd)) {
 }
 
 $dotfiles = "C:\Data\repos\dotfiles"
-$user = "niklasrst"
-
-if ($false -eq (Test-Path -Path C:\Users\$user)) {
-    Write-Error "User $($user) not found on $($ENV:COMPUTERNAME)"
-    break
-}
 
 # APPLY DSC
 if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
@@ -67,21 +61,26 @@ if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::
     }
 
     ## Setup symlinks
-    $configFiles = @{
-        "$user\.gitconfig" = "$dotfiles\.gitconfig"
-        "$user\.gitconfig-azure" = "$dotfiles\.gitconfig-azure"
-        "$user\.gitconfig-github" = "$dotfiles\.gitconfig-github"
-        "$([Environment]::GetFolderPath([Environment+SpecialFolder]::Personal))\PowerShell" = "$dotfiles\pwsh\Microsoft.PowerShell_profile.ps1"
-        "$([Environment]::GetFolderPath([Environment+SpecialFolder]::Personal))\WindowsPowerShell" = "$dotfiles\pwsh\Microsoft.PowerShell_profile.ps1"
-        "C:\Users\$user\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" = "$dotfiles\windowsterminal\settings.json"
-        "C:\Users\$user\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\state.json" = "$dotfiles\windowsterminal\state.json"
+    $ExcludeUsersList = @("Default", "defaultuser0", "Public")
+    foreach ($Folder in Get-ChildItem -Path "C:\Users" -Directory -Exclude $ExcludeUsersList) {
+        $user = $Folder.Name
+
+        $configFiles = @{
+            "$user\.gitconfig" = "$dotfiles\.gitconfig"
+            "$user\.gitconfig-azure" = "$dotfiles\.gitconfig-azure"
+            "$user\.gitconfig-github" = "$dotfiles\.gitconfig-github"
+            "$([Environment]::GetFolderPath([Environment+SpecialFolder]::Personal))\PowerShell" = "$dotfiles\pwsh\Microsoft.PowerShell_profile.ps1"
+            "$([Environment]::GetFolderPath([Environment+SpecialFolder]::Personal))\WindowsPowerShell" = "$dotfiles\pwsh\Microsoft.PowerShell_profile.ps1"
+            "C:\Users\$user\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" = "$dotfiles\windowsterminal\settings.json"
+            "C:\Users\$user\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\state.json" = "$dotfiles\windowsterminal\state.json"
+        }
+
+        $configFiles.Keys | Where-Object { Test-Path -Path $_ } | ForEach-Object { Remove-Item -Path $_ -Force }
+        $configFiles.Keys | ForEach-Object {
+            $null = New-Item -ItemType SymbolicLink -Path $_ -Target $configFiles[$_] -Force
+        }
     }
 
-    $configFiles.Keys | Where-Object { Test-Path -Path $_ } | ForEach-Object { Remove-Item -Path $_ -Force }
-    $configFiles.Keys | ForEach-Object {
-        $null = New-Item -ItemType SymbolicLink -Path $_ -Target $configFiles[$_] -Force
-    }
-    
     ## Set wallpaper
     New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Force -ErrorAction SilentlyContinue | Out-Null
     New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Name 'DesktopImageStatus' -Value "1" -PropertyType DWORD -Force | Out-Null
