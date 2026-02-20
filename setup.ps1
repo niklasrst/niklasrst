@@ -54,18 +54,18 @@ if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::
         $user = $Folder.Name
 
         $configFiles = @{
-            "$user\.gitconfig" = "$dotfiles\.gitconfig"
-            "$user\.gitconfig-azure" = "$dotfiles\.gitconfig-azure"
-            "$user\.gitconfig-github" = "$dotfiles\.gitconfig-github"
-            "$([Environment]::GetFolderPath([Environment+SpecialFolder]::Personal))\PowerShell" = "$dotfiles\pwsh\Microsoft.PowerShell_profile.ps1"
-            "$([Environment]::GetFolderPath([Environment+SpecialFolder]::Personal))\WindowsPowerShell" = "$dotfiles\pwsh\Microsoft.PowerShell_profile.ps1"
+            "C:\Users\$user\.gitconfig" = "$dotfiles\.gitconfig"
+            "C:\Users\$user\.gitconfig-azure" = "$dotfiles\.gitconfig-azure"
+            "C:\Users\$user\.gitconfig-github" = "$dotfiles\.gitconfig-github"
+            "$([Environment]::GetFolderPath([Environment+SpecialFolder]::Personal))\PowerShell\Microsoft.PowerShell_profile.ps1" = "$dotfiles\pwsh\Microsoft.PowerShell_profile.ps1"
+            "$([Environment]::GetFolderPath([Environment+SpecialFolder]::Personal))\WindowsPowerShell\Microsoft.PowerShell_profile.ps1" = "$dotfiles\pwsh\Microsoft.PowerShell_profile.ps1"
             "C:\Users\$user\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" = "$dotfiles\windowsterminal\settings.json"
             "C:\Users\$user\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\state.json" = "$dotfiles\windowsterminal\state.json"
         }
 
         $configFiles.Keys | Where-Object { Test-Path -Path $_ } | ForEach-Object { Remove-Item -Path $_ -Force }
         $configFiles.Keys | ForEach-Object {
-            $null = New-Item -ItemType SymbolicLink -Path $_ -Target $configFiles[$_] -Force
+            $null = New-Item -ItemType SymbolicLink -Path $_ -Target $configFiles[$_] -Force -Confirm:$false
         }
     }
 
