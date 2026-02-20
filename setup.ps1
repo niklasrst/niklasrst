@@ -23,18 +23,6 @@
 .AUTHOR
     Niklas Rast
 #>
-
-# PRE-CHECKS
-if (!(Test-Path -Path "C:\Program Files\Git\cmd\git.exe" )) {
-    winget install git.git --source winget --force
-}
-
-$dotfiles = "C:\Data\repos\dotfiles"
-if (!(Test-Path -Path $dotfiles)) {
-    #cmdkey /list | Select-String "github"
-    Start-Process "C:\Program Files\Git\cmd\git.exe" -ArgumentList "clone https://github.com/niklasrst/dotfiles.git $($dotfiles)" -Wait
-}
-
 # APPLY DSC
 if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     Write-Output "Running in Admin mode for SYSTEM configuration."
@@ -43,6 +31,17 @@ if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::
     Install-PackageProvider -Name NuGet -Force -Confirm:$false
     Install-Module -Name Microsoft.WinGet.Client -Force -Confirm:$false
     Repair-WinGetPackageManager -AllUsers -Force
+
+    if (!(Test-Path -Path "C:\Program Files\Git\cmd\git.exe" )) {
+        winget install git.git --source winget --force
+    }
+
+    $dotfiles = "C:\Data\repos\dotfiles"
+    if (!(Test-Path -Path $dotfiles)) {
+        #cmdkey /list | Select-String "github"
+        Start-Process "C:\Program Files\Git\cmd\git.exe" -ArgumentList "clone https://github.com/niklasrst/dotfiles.git $($dotfiles)" -Wait
+    }
+
     Start-Process -FilePath "winget.exe" -ArgumentList "configure --enable" -Wait
     Start-Process -FilePath "winget.exe" -ArgumentList "configure $dotfiles\client_configuration.dsc.yaml --accept-configuration-agreements" -Wait
 
