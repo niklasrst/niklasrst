@@ -7,7 +7,7 @@
     The script is intended to be run in a Windows environment and requires administrative privileges.
 
 .EXAMPLE
-    Invoke-Expression (Invoke-RestMethod setup.rastcloud.com)
+    Invoke-Expression (Invoke-RestMethod aka.rastcloud.com/setup)
     iex (irm aka.rastcloud.com/setup)
 
     Update Git submodules
@@ -32,7 +32,7 @@ Repair-WinGetPackageManager -AllUsers -Force
 $dotfiles = "C:\Data\repos\dotfiles"
 if ($false -eq (Test-Path -Path $dotfiles)) {
     winget install git.git
-    Start-Process -FilePath "powershell.exe" -ArgumentList "git clone https://github.com/niklasrst/dotfiles.git $dotfiles" -Wait
+    Start-Process powershell.exe -ArgumentList "-Command git clone https://github.com/niklasrst/dotfiles.git $($dotfiles); Start-Sleep 2" -Wait
 }
 
 # APPLY DSC
