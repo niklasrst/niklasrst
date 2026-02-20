@@ -25,9 +25,6 @@
 #>
 
 # PRE-CHECKS
-Install-PackageProvider -Name NuGet -Force -Confirm:$false
-Install-Module -Name Microsoft.WinGet.Client -Force -Confirm:$false
-Repair-WinGetPackageManager -AllUsers -Force
 if (!(Test-Path -Path "C:\Program Files\Git\cmd\git.exe" )) {
     winget install git.git --source winget --force
 }
@@ -43,6 +40,9 @@ if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::
     Write-Output "Running in Admin mode for SYSTEM configuration."
 
     ## Winget DSC
+    Install-PackageProvider -Name NuGet -Force -Confirm:$false
+    Install-Module -Name Microsoft.WinGet.Client -Force -Confirm:$false
+    Repair-WinGetPackageManager -AllUsers -Force
     Start-Process -FilePath "winget.exe" -ArgumentList "configure --enable" -Wait
     Start-Process -FilePath "winget.exe" -ArgumentList "configure $dotfiles\client_configuration.dsc.yaml --accept-configuration-agreements" -Wait
 
