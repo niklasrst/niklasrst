@@ -32,7 +32,7 @@ Repair-WinGetPackageManager -AllUsers -Force
 $dotfiles = "C:\Data\repos\dotfiles"
 if ($false -eq (Test-Path -Path $dotfiles)) {
     winget install git.git --source winget
-    Start-Process powershell.exe -ArgumentList "-Command git clone https://github.com/niklasrst/dotfiles.git $($dotfiles); Read-Host 'DONE'" -Wait
+    Start-Process "C:\Program Files\Git\cmd\git.exe" -ArgumentList "clone https://github.com/niklasrst/dotfiles.git $($dotfiles)" -Wait
 }
 
 # APPLY DSC
