@@ -28,12 +28,13 @@
 Install-PackageProvider -Name NuGet -Force -Confirm:$false
 Install-Module -Name Microsoft.WinGet.Client -Force -Confirm:$false
 Repair-WinGetPackageManager -AllUsers -Force
-if ($false -eq (Test-Path -Path "C:\Program Files\Git\cmd\git.exe" )) {
-    winget install git.git --source winget
+if (!(Test-Path -Path "C:\Program Files\Git\cmd\git.exe" )) {
+    winget install git.git --source winget --force
 }
 
 $dotfiles = "C:\Data\repos\dotfiles"
-if ($false -eq (Test-Path -Path $dotfiles)) {
+if (!(Test-Path -Path $dotfiles)) {
+    cmdkey /list | Select-String "github"
     Start-Process "C:\Program Files\Git\cmd\git.exe" -ArgumentList "clone https://github.com/niklasrst/dotfiles.git $($dotfiles)" -Wait
 }
 
