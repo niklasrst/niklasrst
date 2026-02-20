@@ -34,7 +34,7 @@ if (!(Test-Path -Path "C:\Program Files\Git\cmd\git.exe" )) {
 
 $dotfiles = "C:\Data\repos\dotfiles"
 if (!(Test-Path -Path $dotfiles)) {
-    cmdkey /list | Select-String "github"
+    #cmdkey /list | Select-String "github"
     Start-Process "C:\Program Files\Git\cmd\git.exe" -ArgumentList "clone https://github.com/niklasrst/dotfiles.git $($dotfiles)" -Wait
 }
 
