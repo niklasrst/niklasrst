@@ -23,6 +23,8 @@
 .AUTHOR
     Niklas Rast
 #>
+$dotfiles = "C:\Data\repos\dotfiles"
+
 # APPLY DSC
 if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     Write-Output "Running in Admin mode for SYSTEM configuration."
@@ -36,7 +38,6 @@ if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::
         winget install git.git --source winget --force
     }
 
-    $dotfiles = "C:\Data\repos\dotfiles"
     if (!(Test-Path -Path $dotfiles)) {
         #cmdkey /list | Select-String "github"
         Start-Process "C:\Program Files\Git\cmd\git.exe" -ArgumentList "clone https://github.com/niklasrst/dotfiles.git $($dotfiles)" -Wait
