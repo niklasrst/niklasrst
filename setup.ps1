@@ -72,6 +72,20 @@ if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::
         }
     }
 
+    ## Install fonts
+    $fontPath = "$dotfiles\tools\CascadiaCode"
+    if (Test-Path -Path $fontPath) {
+        $fonts = Get-ChildItem -Path $fontPath -Filter "*.ttf"
+        foreach ($font in $fonts) {
+            $dest = "C:\Windows\Fonts\$($font.Name)"
+            if (!(Test-Path -Path $dest)) {
+                Copy-Item -Path $font.FullName -Destination $dest -Force
+                New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts" -Name $font.BaseName -Value $font.Name -PropertyType STRING -Force | Out-Null
+                Write-Output "Installed font: $($font.Name)"
+            }
+        }
+    }
+
     ## Set wallpaper
     New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Force -ErrorAction SilentlyContinue | Out-Null
     New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Name 'DesktopImageStatus' -Value "1" -PropertyType DWORD -Force | Out-Null
