@@ -25,33 +25,24 @@
 #>
 $dotfiles = "C:\Data\repos\dotfiles"
 
-# APPLY DSC
 if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     Write-Output "Running in Admin mode for SYSTEM configuration."
 
-    ## Winget DSC
+    ## Winget
     Install-PackageProvider -Name NuGet -Force -Confirm:$false
     Install-Module -Name Microsoft.WinGet.Client -Force -Confirm:$false
     Repair-WinGetPackageManager -AllUsers -Force
+    winget install git.git --source winget --force
 
-    if (!(Test-Path -Path "C:\Program Files\Git\cmd\git.exe" )) {
-        winget install git.git --source winget --force
-    }
 
-    if (!(Test-Path -Path $dotfiles)) {
-        #cmdkey /list | Select-String "github"
-        Start-Process "C:\Program Files\Git\cmd\git.exe" -ArgumentList "clone https://github.com/niklasrst/dotfiles.git $($dotfiles)" -Wait
-    }
-
+    ## Dotfiles
+    #cmdkey /list | Select-String "github"
+    Start-Process "C:\Program Files\Git\cmd\git.exe" -ArgumentList "clone https://github.com/niklasrst/dotfiles.git $($dotfiles)" -Wait -PassThru
     Start-Sleep -Seconds 2
 
-    Start-Process -FilePath "winget.exe" -ArgumentList "configure --enable" -Wait
-    Start-Process -FilePath "winget.exe" -ArgumentList "configure $dotfiles\client_configuration.dsc.yaml --accept-configuration-agreements" -Wait
-
-    if (!(Test-Path -Path $dotfiles)) {
-        Write-Error "$($dotfiles) not found on $($ENV:COMPUTERNAME)"
-        break
-    }
+    ## Apply DSC configuration
+    Start-Process -FilePath "winget.exe" -ArgumentList "configure --enable" -Wait -PassThru
+    Start-Process -FilePath "winget.exe" -ArgumentList "configure $dotfiles\client_configuration.dsc.yaml --accept-configuration-agreements" -Wait -PassThru
 
     ## Setup symlinks
     $ExcludeUsersList = @("Default", "defaultuser0", "Public")
@@ -75,16 +66,13 @@ if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::
     }
 
     ## Install fonts
-    $fontPath = "$dotfiles\tools\CascadiaCode"
-    if (Test-Path -Path $fontPath) {
-        $fonts = Get-ChildItem -Path $fontPath -Filter "*.ttf"
-        foreach ($font in $fonts) {
-            $dest = "C:\Windows\Fonts\$($font.Name)"
-            if (!(Test-Path -Path $dest)) {
-                Copy-Item -Path $font.FullName -Destination $dest -Force
-                New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts" -Name $font.BaseName -Value $font.Name -PropertyType STRING -Force | Out-Null
-                Write-Output "Installed font: $($font.Name)"
-            }
+    $fonts = Get-ChildItem -Path "$dotfiles\tools\CascadiaCode" -Filter "*.ttf"
+    foreach ($font in $fonts) {
+        $dest = "C:\Windows\Fonts\$($font.Name)"
+        if (!(Test-Path -Path $dest)) {
+            Copy-Item -Path $font.FullName -Destination $dest -Force
+            New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts" -Name $font.BaseName -Value $font.Name -PropertyType STRING -Force | Out-Null
+            Write-Output "Installed font: $($font.Name)"
         }
     }
 
@@ -108,19 +96,9 @@ if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::
 } else {
     Write-Output "Running in User mode for customizations."
 
-    if ($false -eq (Test-Path -Path "HKLM:\SOFTWARE\WingetDSC")) {
-        Write-Error "DSC needs to be configured in Admin mode before running this script in User mode on $($ENV:COMPUTERNAME)"
-        break
-    }
-
     ## Winget DSC
-    Start-Process -FilePath "winget.exe" -ArgumentList "configure --enable" -Wait
-    Start-Process -FilePath "winget.exe" -ArgumentList "configure $dotfiles\user_configuration.dsc.yaml --accept-configuration-agreements" -Wait
-
-    if ($false -eq (Test-Path -Path $dotfiles)) {
-        Write-Error "$($dotfiles) not found on $($ENV:COMPUTERNAME)"
-        break
-    }
+    Start-Process -FilePath "winget.exe" -ArgumentList "configure --enable" -Wait -PassThru
+    Start-Process -FilePath "winget.exe" -ArgumentList "configure $dotfiles\user_configuration.dsc.yaml --accept-configuration-agreements" -Wait -PassThru
 
     ## Add PATH variables
     $user_path = $(Get-Content -Path "$dotfiles\path_user.txt")
