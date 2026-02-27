@@ -97,6 +97,11 @@ if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::
     [System.Environment]::SetEnvironmentVariable("Path", $machine_path, [System.EnvironmentVariableTarget]::Machine)
     $user_path = $(Get-Content -Path "$dotfiles\path_user.txt") -replace "<home>", $HOME
     [System.Environment]::SetEnvironmentVariable("Path", $user_path, [System.EnvironmentVariableTarget]::User)
+
+    ## Register DSC runtime
+    New-ItemProperty -Path "HKLM:\SOFTWARE\WingetDSC" -Name 'Mode' -Value "Admin" -PropertyType STRING -Force | Out-Null
+    New-ItemProperty -Path "HKLM:\SOFTWARE\WingetDSC" -Name 'RunAs' -Value "$($ENV:USERNAME)" -PropertyType STRING -Force | Out-Null
+    New-ItemProperty -Path "HKLM:\SOFTWARE\WingetDSC" -Name 'RunTime' -Value "$((get-date).ToString())" -PropertyType STRING -Force | Out-Null
 } else {
     Write-Output "Running in User mode for customizations."
 
@@ -115,6 +120,11 @@ if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::
 
     ## Add custom startmenu
     Copy-Item -Path "$dotfiles\LayoutModification.xml" -Destination "$env:LOCALAPPDATA\Microsoft\Windows\Shell" -Force
+
+    ## Register DSC runtime
+    New-ItemProperty -Path "HKCU:\SOFTWARE\WingetDSC" -Name 'Mode' -Value "User" -PropertyType STRING -Force | Out-Null
+    New-ItemProperty -Path "HKCU:\SOFTWARE\WingetDSC" -Name 'RunAs' -Value "$($ENV:USERNAME)" -PropertyType STRING -Force | Out-Null
+    New-ItemProperty -Path "HKCU:\SOFTWARE\WingetDSC" -Name 'RunTime' -Value "$((get-date).ToString())" -PropertyType STRING -Force | Out-Null
 }
 
 do {
