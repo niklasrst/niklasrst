@@ -99,11 +99,17 @@ if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::
     [System.Environment]::SetEnvironmentVariable("Path", $user_path, [System.EnvironmentVariableTarget]::User)
 
     ## Register DSC runtime
+    New-Item -Path "HKLM:\SOFTWARE\WingetDSC" -Force -ErrorAction SilentlyContinue | Out-Null
     New-ItemProperty -Path "HKLM:\SOFTWARE\WingetDSC" -Name 'Mode' -Value "Admin" -PropertyType STRING -Force | Out-Null
     New-ItemProperty -Path "HKLM:\SOFTWARE\WingetDSC" -Name 'RunAs' -Value "$($ENV:USERNAME)" -PropertyType STRING -Force | Out-Null
     New-ItemProperty -Path "HKLM:\SOFTWARE\WingetDSC" -Name 'RunTime' -Value "$((get-date).ToString())" -PropertyType STRING -Force | Out-Null
 } else {
     Write-Output "Running in User mode for customizations."
+
+    if ($false -eq (Test-Path -Path "HKLM:\SOFTWARE\WingetDSC")) {
+        Write-Error "DSC needs to be configured in Admin mode before running this script in User mode on $($ENV:COMPUTERNAME)"
+        break
+    }
 
     ## Winget DSC
     Start-Process -FilePath "winget.exe" -ArgumentList "configure --enable" -Wait
