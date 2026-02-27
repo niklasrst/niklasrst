@@ -108,6 +108,7 @@ if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::
     Copy-Item -Path "$dotfiles\LayoutModification.xml" -Destination "$env:LOCALAPPDATA\Microsoft\Windows\Shell" -Force
 
     ## Register DSC runtime
+    New-Item -Path "HKCU:\SOFTWARE\WingetDSC" -Force -ErrorAction SilentlyContinue | Out-Null
     New-ItemProperty -Path "HKCU:\SOFTWARE\WingetDSC" -Name 'Mode' -Value "User" -PropertyType STRING -Force | Out-Null
     New-ItemProperty -Path "HKCU:\SOFTWARE\WingetDSC" -Name 'RunAs' -Value "$($ENV:USERNAME)" -PropertyType STRING -Force | Out-Null
     New-ItemProperty -Path "HKCU:\SOFTWARE\WingetDSC" -Name 'RunTime' -Value "$((get-date).ToString())" -PropertyType STRING -Force | Out-Null
