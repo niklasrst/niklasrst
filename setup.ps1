@@ -43,10 +43,12 @@ if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::
         Start-Process "C:\Program Files\Git\cmd\git.exe" -ArgumentList "clone https://github.com/niklasrst/dotfiles.git $($dotfiles)" -Wait
     }
 
+    Start-Sleep -Seconds 2
+
     Start-Process -FilePath "winget.exe" -ArgumentList "configure --enable" -Wait
     Start-Process -FilePath "winget.exe" -ArgumentList "configure $dotfiles\client_configuration.dsc.yaml --accept-configuration-agreements" -Wait
 
-    if ($false -eq (Test-Path -Path $dotfiles)) {
+    if (!(Test-Path -Path $dotfiles)) {
         Write-Error "$($dotfiles) not found on $($ENV:COMPUTERNAME)"
         break
     }
