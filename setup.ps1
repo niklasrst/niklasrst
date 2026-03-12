@@ -41,7 +41,6 @@ Get-ChildItem -Path "C:\Users" -Directory | ForEach-Object {
     if ($_.Name -notin "defaultuser0", "public", "All Users", "Default") {
         Write-Host "Processing user: $($_.Name)"
         
-        # Define targets for clarity
         $targets = @(
             "$ENV:OneDrive\Dokumente\WindowsPowerShell",
             "$ENV:OneDrive\Dokumente\PowerShell",
@@ -51,15 +50,13 @@ Get-ChildItem -Path "C:\Users" -Directory | ForEach-Object {
             "C:\Users\$($_.Name)\.gitconfig-github-fraport"
         )
 
-        # Remove existing items first
         $targets | ForEach-Object { Remove-Item -Path $_ -Recurse -Force -ErrorAction SilentlyContinue }
 
-        # Create Symbolic Links
         New-Item -ItemType SymbolicLink -Path "$ENV:OneDrive\Dokumente\WindowsPowerShell" -Value "$dotfiles\pwsh" -Force
-        New-Item -ItemType SymbolicLink -Path "$ENV:OneDrive\Dokumente\PowerShell"        -Value "$dotfiles\pwsh" -Force
-        New-Item -ItemType SymbolicLink -Path "C:\Users\$($_.Name)\.gitconfig"           -Value "$dotfiles\.gitconfig" -Force
-        New-Item -ItemType SymbolicLink -Path "C:\Users\$($_.Name)\.gitconfig-azure"     -Value "$dotfiles\.gitconfig-azure" -Force
-        New-Item -ItemType SymbolicLink -Path "C:\Users\$($_.Name)\.gitconfig-github"    -Value "$dotfiles\.gitconfig-github" -Force
+        New-Item -ItemType SymbolicLink -Path "$ENV:OneDrive\Dokumente\PowerShell" -Value "$dotfiles\pwsh" -Force
+        New-Item -ItemType SymbolicLink -Path "C:\Users\$($_.Name)\.gitconfig" -Value "$dotfiles\.gitconfig" -Force
+        New-Item -ItemType SymbolicLink -Path "C:\Users\$($_.Name)\.gitconfig-azure" -Value "$dotfiles\.gitconfig-azure" -Force
+        New-Item -ItemType SymbolicLink -Path "C:\Users\$($_.Name)\.gitconfig-github" -Value "$dotfiles\.gitconfig-github" -Force
         New-Item -ItemType SymbolicLink -Path "C:\Users\$($_.Name)\.gitconfig-github-fraport" -Value "$dotfiles\.gitconfig-github-fraport" -Force
     }
 }
@@ -104,5 +101,6 @@ do {
 if ($response -eq 'Y') {
     Restart-Computer
 }
+
 
 
