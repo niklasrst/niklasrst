@@ -37,12 +37,17 @@ Start-Process "C:\Program Files\Git\cmd\git.exe" -ArgumentList "clone https://gi
 Start-Sleep -Seconds 2
 
 ## Setup symlinks
-New-Item -ItemType SymbolicLink -Path "$ENV:OneDrive\Dokumente\WindowsPowerShell" -Value "$dotfiles\pwsh" -Force
-New-Item -ItemType SymbolicLink -Path "$ENV:OneDrive\Dokumente\PowerShell"  -Name "$dotfiles\pwsh" -Value -Force
-New-Item -ItemType SymbolicLink -Path "C:\Users\55201\.gitconfig" -Name "$dotfiles\.gitconfig" -Value -Force
-New-Item -ItemType SymbolicLink -Path "C:\Users\55201\.gitconfig-azure" -Name "$dotfiles\.gitconfig-azure" -Value -Force
-New-Item -ItemType SymbolicLink -Path "C:\Users\55201\.gitconfig-github" -Name "$dotfiles\.gitconfig-github" -Value -Force
-New-Item -ItemType SymbolicLink -Path "C:\Users\55201\.gitconfig-github-fraport" -Name "$dotfiles\.gitconfig-github-fraport" -Value -Force
+Get-ChildItem -Path "C:\Users" -Directory | ForEach-Object {
+    if ($_.Name -notin "defaultuser0", "public") {
+        Write-Host $_.Name
+        New-Item -ItemType SymbolicLink -Path "$ENV:OneDrive\Dokumente\WindowsPowerShell" -Value "$dotfiles\pwsh" -Force
+        New-Item -ItemType SymbolicLink -Path "$ENV:OneDrive\Dokumente\PowerShell"  -Name "$dotfiles\pwsh" -Value -Force
+        New-Item -ItemType SymbolicLink -Path "C:\Users\$($_.Name)\.gitconfig" -Name "$dotfiles\.gitconfig" -Value -Force
+        New-Item -ItemType SymbolicLink -Path "C:\Users\$($_.Name)\.gitconfig-azure" -Name "$dotfiles\.gitconfig-azure" -Value -Force
+        New-Item -ItemType SymbolicLink -Path "C:\Users\$($_.Name)\.gitconfig-github" -Name "$dotfiles\.gitconfig-github" -Value -Force
+        New-Item -ItemType SymbolicLink -Path "C:\Users\$($_.Name)\.gitconfig-github-fraport" -Name "$dotfiles\.gitconfig-github-fraport" -Value -Force
+    }
+}
 
 ## Install fonts
 $fonts = Get-ChildItem -Path "$dotfiles\tools\CascadiaCode" -Filter "*.ttf"
@@ -74,7 +79,7 @@ Start-Process -FilePath "winget.exe" -ArgumentList "configure $dotfiles\user_con
 
 ## Register DSC runtime
 New-Item -Path "HKLM:\SOFTWARE\WingetDSC" -Force -ErrorAction SilentlyContinue | Out-Null
-New-ItemProperty -Path "HKLM:\SOFTWARE\WingetDSC" -Name 'Mode' -Value "Admin" -PropertyType STRING -Force | Out-Null
+New-ItemProperty -Path "HKLM:\SOFTWARE\WingetDSC" -Name 'Mode' -Value "FULL" -PropertyType STRING -Force | Out-Null
 New-ItemProperty -Path "HKLM:\SOFTWARE\WingetDSC" -Name 'RunAs' -Value "$($ENV:USERNAME)" -PropertyType STRING -Force | Out-Null
 New-ItemProperty -Path "HKLM:\SOFTWARE\WingetDSC" -Name 'RunTime' -Value "$((get-date).ToString())" -PropertyType STRING -Force | Out-Null
 
@@ -84,3 +89,4 @@ do {
 if ($response -eq 'Y') {
     Restart-Computer
 }
+
