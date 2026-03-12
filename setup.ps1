@@ -25,82 +25,62 @@
 #>
 $dotfiles = "C:\Data\repos\dotfiles"
 
-if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    Write-Output "Running in Admin mode for SYSTEM configuration."
+## Winget
+Install-PackageProvider -Name NuGet -Force -Confirm:$false
+Install-Module -Name Microsoft.WinGet.Client -Force -Confirm:$false
+Repair-WinGetPackageManager -AllUsers -Force
+winget install git.git --source winget --force
 
-    ## Winget
-    Install-PackageProvider -Name NuGet -Force -Confirm:$false
-    Install-Module -Name Microsoft.WinGet.Client -Force -Confirm:$false
-    Repair-WinGetPackageManager -AllUsers -Force
-    winget install git.git --source winget --force
+## Dotfiles
+#cmdkey /list | Select-String "github"
+Start-Process "C:\Program Files\Git\cmd\git.exe" -ArgumentList "clone https://github.com/niklasrst/dotfiles.git $($dotfiles)" -Wait -PassThru
+Start-Sleep -Seconds 2
 
+## Setup symlinks
+New-Item -ItemType SymbolicLink -Path "$ENV:OneDrive\Dokumente\WindowsPowerShell" -Value "$dotfiles\pwsh" -Force
+New-Item -ItemType SymbolicLink -Path "$ENV:OneDrive\Dokumente\PowerShell"  -Name "$dotfiles\pwsh" -Value -Force
+New-Item -ItemType SymbolicLink -Path "C:\Users\55201\.gitconfig" -Name "$dotfiles\.gitconfig" -Value -Force
+New-Item -ItemType SymbolicLink -Path "C:\Users\55201\.gitconfig-azure" -Name "$dotfiles\.gitconfig-azure" -Value -Force
+New-Item -ItemType SymbolicLink -Path "C:\Users\55201\.gitconfig-github" -Name "$dotfiles\.gitconfig-github" -Value -Force
+New-Item -ItemType SymbolicLink -Path "C:\Users\55201\.gitconfig-github-fraport" -Name "$dotfiles\.gitconfig-github-fraport" -Value -Force
 
-    ## Dotfiles
-    #cmdkey /list | Select-String "github"
-    Start-Process "C:\Program Files\Git\cmd\git.exe" -ArgumentList "clone https://github.com/niklasrst/dotfiles.git $($dotfiles)" -Wait -PassThru
-    Start-Sleep -Seconds 2
-
-    ## Apply DSC configuration
-    Start-Process -FilePath "winget.exe" -ArgumentList "configure --enable" -Wait -PassThru
-    Start-Process -FilePath "winget.exe" -ArgumentList "configure $dotfiles\client_configuration.dsc.yaml --accept-configuration-agreements" -Wait -PassThru
-
-    ## Setup symlinks
-    
-
-    ## Install fonts
-    $fonts = Get-ChildItem -Path "$dotfiles\tools\CascadiaCode" -Filter "*.ttf"
-    foreach ($font in $fonts) {
-        $dest = "C:\Windows\Fonts\$($font.Name)"
-        if (!(Test-Path -Path $dest)) {
-            Copy-Item -Path $font.FullName -Destination $dest -Force
-            New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts" -Name $font.BaseName -Value $font.Name -PropertyType STRING -Force | Out-Null
-            Write-Output "Installed font: $($font.Name)"
-        }
+## Install fonts
+$fonts = Get-ChildItem -Path "$dotfiles\tools\CascadiaCode" -Filter "*.ttf"
+foreach ($font in $fonts) {
+    $dest = "C:\Windows\Fonts\$($font.Name)"
+    if (!(Test-Path -Path $dest)) {
+        Copy-Item -Path $font.FullName -Destination $dest -Force
+        New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts" -Name $font.BaseName -Value $font.Name -PropertyType STRING -Force | Out-Null
+        Write-Output "Installed font: $($font.Name)"
     }
-
-    ## Set wallpaper
-    #New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Force -ErrorAction SilentlyContinue | Out-Null
-    #New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Name 'DesktopImageStatus' -Value "1" -PropertyType DWORD -Force | Out-Null
-    #New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Name 'DesktopImagePath' -Value "$dotfiles\bg.jpg" -PropertyType STRING -Force | Out-Null
-    #New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Name 'DesktopImageUrl' -Value "$dotfiles\bg.jpg" -PropertyType STRING -Force | Out-Null
-
-    ## Add PATH variables
-    #$machine_path = Get-Content -Path "$dotfiles\path_machine.txt"
-    #[System.Environment]::SetEnvironmentVariable("Path", $machine_path, [System.EnvironmentVariableTarget]::Machine)
-    #$user_path = $(Get-Content -Path "$dotfiles\path_user.txt") -replace "<home>", $HOME
-    #[System.Environment]::SetEnvironmentVariable("Path", $user_path, [System.EnvironmentVariableTarget]::User)
-
-    ## Register DSC runtime
-    New-Item -Path "HKLM:\SOFTWARE\WingetDSC" -Force -ErrorAction SilentlyContinue | Out-Null
-    New-ItemProperty -Path "HKLM:\SOFTWARE\WingetDSC" -Name 'Mode' -Value "Admin" -PropertyType STRING -Force | Out-Null
-    New-ItemProperty -Path "HKLM:\SOFTWARE\WingetDSC" -Name 'RunAs' -Value "$($ENV:USERNAME)" -PropertyType STRING -Force | Out-Null
-    New-ItemProperty -Path "HKLM:\SOFTWARE\WingetDSC" -Name 'RunTime' -Value "$((get-date).ToString())" -PropertyType STRING -Force | Out-Null
-} else {
-    Write-Output "Running in User mode for customizations."
-
-    ## Winget DSC
-    Start-Process -FilePath "winget.exe" -ArgumentList "configure --enable" -Wait -PassThru
-    Start-Process -FilePath "winget.exe" -ArgumentList "configure $dotfiles\user_configuration.dsc.yaml --accept-configuration-agreements" -Wait -PassThru
-
-    ## Add PATH variables
-    #$user_path = $(Get-Content -Path "$dotfiles\path_user.txt")
-    #[System.Environment]::SetEnvironmentVariable("Path", $user_path, [System.EnvironmentVariableTarget]::User) -replace "<home>", $HOME
-
-    ## Add custom startmenu
-    #Copy-Item -Path "$dotfiles\LayoutModification.xml" -Destination "$env:LOCALAPPDATA\Microsoft\Windows\Shell" -Force
-
-    ## Register DSC runtime
-    New-Item -Path "HKCU:\SOFTWARE\WingetDSC" -Force -ErrorAction SilentlyContinue | Out-Null
-    New-ItemProperty -Path "HKCU:\SOFTWARE\WingetDSC" -Name 'Mode' -Value "User" -PropertyType STRING -Force | Out-Null
-    New-ItemProperty -Path "HKCU:\SOFTWARE\WingetDSC" -Name 'RunAs' -Value "$($ENV:USERNAME)" -PropertyType STRING -Force | Out-Null
-    New-ItemProperty -Path "HKCU:\SOFTWARE\WingetDSC" -Name 'RunTime' -Value "$((get-date).ToString())" -PropertyType STRING -Force | Out-Null
 }
+
+## Add PATH variables
+$machine_path = Get-Content -Path "$dotfiles\path_machine.txt"
+[System.Environment]::SetEnvironmentVariable("Path", $machine_path, [System.EnvironmentVariableTarget]::Machine)
+$user_path = $(Get-Content -Path "$dotfiles\path_user.txt") -replace "<home>", $HOME
+[System.Environment]::SetEnvironmentVariable("Path", $user_path, [System.EnvironmentVariableTarget]::User)
+
+## Apply DSC configuration
+Start-Process -FilePath "winget.exe" -ArgumentList "configure --enable" -Wait -PassThru
+Start-Process -FilePath "winget.exe" -ArgumentList "configure $dotfiles\client_configuration.dsc.yaml --accept-configuration-agreements" -Wait -PassThru
+Start-Process -FilePath "winget.exe" -ArgumentList "configure $dotfiles\user_configuration.dsc.yaml --accept-configuration-agreements" -Wait -PassThru
+
+## Set wallpaper
+#New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Force -ErrorAction SilentlyContinue | Out-Null
+#New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Name 'DesktopImageStatus' -Value "1" -PropertyType DWORD -Force | Out-Null
+#New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Name 'DesktopImagePath' -Value "$dotfiles\bg.jpg" -PropertyType STRING -Force | Out-Null
+#New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Name 'DesktopImageUrl' -Value "$dotfiles\bg.jpg" -PropertyType STRING -Force | Out-Null
+
+## Register DSC runtime
+New-Item -Path "HKLM:\SOFTWARE\WingetDSC" -Force -ErrorAction SilentlyContinue | Out-Null
+New-ItemProperty -Path "HKLM:\SOFTWARE\WingetDSC" -Name 'Mode' -Value "Admin" -PropertyType STRING -Force | Out-Null
+New-ItemProperty -Path "HKLM:\SOFTWARE\WingetDSC" -Name 'RunAs' -Value "$($ENV:USERNAME)" -PropertyType STRING -Force | Out-Null
+New-ItemProperty -Path "HKLM:\SOFTWARE\WingetDSC" -Name 'RunTime' -Value "$((get-date).ToString())" -PropertyType STRING -Force | Out-Null
 
 do {
     $response = Read-Host "Reboot now? (Y/N)"
 } until ($response -match '^[YN]$')
 if ($response -eq 'Y') {
     Restart-Computer
-
 }
-
