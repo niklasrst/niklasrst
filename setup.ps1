@@ -45,25 +45,7 @@ if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::
     Start-Process -FilePath "winget.exe" -ArgumentList "configure $dotfiles\client_configuration.dsc.yaml --accept-configuration-agreements" -Wait -PassThru
 
     ## Setup symlinks
-    $ExcludeUsersList = @("Default", "defaultuser0", "Public")
-    foreach ($Folder in Get-ChildItem -Path "C:\Users" -Directory -Exclude $ExcludeUsersList) {
-        $user = $Folder.Name
-
-        $configFiles = @{
-            "C:\Users\$user\.gitconfig" = "$dotfiles\.gitconfig"
-            "C:\Users\$user\.gitconfig-azure" = "$dotfiles\.gitconfig-azure"
-            "C:\Users\$user\.gitconfig-github" = "$dotfiles\.gitconfig-github"
-            "$([Environment]::GetFolderPath([Environment+SpecialFolder]::Personal))\PowerShell\Microsoft.PowerShell_profile.ps1" = "$dotfiles\pwsh\Microsoft.PowerShell_profile.ps1"
-            "$([Environment]::GetFolderPath([Environment+SpecialFolder]::Personal))\WindowsPowerShell\Microsoft.PowerShell_profile.ps1" = "$dotfiles\pwsh\Microsoft.PowerShell_profile.ps1"
-            "C:\Users\$user\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" = "$dotfiles\windowsterminal\settings.json"
-            "C:\Users\$user\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\state.json" = "$dotfiles\windowsterminal\state.json"
-        }
-
-        $configFiles.Keys | Where-Object { Test-Path -Path $_ } | ForEach-Object { Remove-Item -Path $_ -Force }
-        $configFiles.Keys | ForEach-Object {
-            $null = New-Item -ItemType SymbolicLink -Path $_ -Target $configFiles[$_] -Force -Confirm:$false
-        }
-    }
+    
 
     ## Install fonts
     $fonts = Get-ChildItem -Path "$dotfiles\tools\CascadiaCode" -Filter "*.ttf"
@@ -83,10 +65,10 @@ if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::
     #New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Name 'DesktopImageUrl' -Value "$dotfiles\bg.jpg" -PropertyType STRING -Force | Out-Null
 
     ## Add PATH variables
-    $machine_path = Get-Content -Path "$dotfiles\path_machine.txt"
-    [System.Environment]::SetEnvironmentVariable("Path", $machine_path, [System.EnvironmentVariableTarget]::Machine)
-    $user_path = $(Get-Content -Path "$dotfiles\path_user.txt") -replace "<home>", $HOME
-    [System.Environment]::SetEnvironmentVariable("Path", $user_path, [System.EnvironmentVariableTarget]::User)
+    #$machine_path = Get-Content -Path "$dotfiles\path_machine.txt"
+    #[System.Environment]::SetEnvironmentVariable("Path", $machine_path, [System.EnvironmentVariableTarget]::Machine)
+    #$user_path = $(Get-Content -Path "$dotfiles\path_user.txt") -replace "<home>", $HOME
+    #[System.Environment]::SetEnvironmentVariable("Path", $user_path, [System.EnvironmentVariableTarget]::User)
 
     ## Register DSC runtime
     New-Item -Path "HKLM:\SOFTWARE\WingetDSC" -Force -ErrorAction SilentlyContinue | Out-Null
@@ -101,11 +83,11 @@ if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::
     Start-Process -FilePath "winget.exe" -ArgumentList "configure $dotfiles\user_configuration.dsc.yaml --accept-configuration-agreements" -Wait -PassThru
 
     ## Add PATH variables
-    $user_path = $(Get-Content -Path "$dotfiles\path_user.txt")
-    [System.Environment]::SetEnvironmentVariable("Path", $user_path, [System.EnvironmentVariableTarget]::User) -replace "<home>", $HOME
+    #$user_path = $(Get-Content -Path "$dotfiles\path_user.txt")
+    #[System.Environment]::SetEnvironmentVariable("Path", $user_path, [System.EnvironmentVariableTarget]::User) -replace "<home>", $HOME
 
     ## Add custom startmenu
-    Copy-Item -Path "$dotfiles\LayoutModification.xml" -Destination "$env:LOCALAPPDATA\Microsoft\Windows\Shell" -Force
+    #Copy-Item -Path "$dotfiles\LayoutModification.xml" -Destination "$env:LOCALAPPDATA\Microsoft\Windows\Shell" -Force
 
     ## Register DSC runtime
     New-Item -Path "HKCU:\SOFTWARE\WingetDSC" -Force -ErrorAction SilentlyContinue | Out-Null
@@ -121,3 +103,4 @@ if ($response -eq 'Y') {
     Restart-Computer
 
 }
+
