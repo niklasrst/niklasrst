@@ -59,8 +59,8 @@ Get-ChildItem -Path "C:\Users" -Directory | ForEach-Object {
         New-Item -ItemType SymbolicLink -Path "C:\Users\$($_.Name)\.gitconfig-github" -Value "$dotfiles\.gitconfig-github" -Force
         New-Item -ItemType SymbolicLink -Path "C:\Users\$($_.Name)\.gitconfig-github-fraport" -Value "$dotfiles\.gitconfig-github-fraport" -Force
 
-        Move-Item -Path "C:\Users\$($_.Name)\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" -Destination "C:\Users\$($_.Name)\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json.org"
-        New-Item -ItemType SymbolicLink -Path "C:\Users\$($_.Name)\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" -Value "$dotfiles\windowsterminal\settings.json" -Force
+        #Move-Item -Path "C:\Users\$($_.Name)\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" -Destination "C:\Users\$($_.Name)\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json.org"
+        #New-Item -ItemType SymbolicLink -Path "C:\Users\$($_.Name)\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" -Value "$dotfiles\windowsterminal\settings.json" -Force
     }
 }
 
@@ -104,6 +104,7 @@ do {
 if ($response -eq 'Y') {
     Restart-Computer
 }
+
 
 
 
