@@ -40,10 +40,14 @@ Start-Sleep -Seconds 2
 Get-ChildItem -Path "C:\Users" -Directory | ForEach-Object {
     if ($_.Name -notin "defaultuser0", "public", "All Users", "Default") {
         Write-Host "Processing user: $($_.Name)"
-        
+
+        $status = dsregcmd /status | Out-String
+        $isManaged = $status -match "AzureAdPrt : YES" -and $status -match "MdmUrl : https://enrollment.manage.microsoft.com"
+        if ($true -eq $isManaged) { $docFolder = $ENV:OneDrive } else { $docFolder = "C:\Users\$($_.Name)\Documents" }
+ 
         $targets = @(
-            "$ENV:OneDrive\Dokumente\WindowsPowerShell",
-            "$ENV:OneDrive\Dokumente\PowerShell",
+            "$docFolder\WindowsPowerShell",
+            "$docFolder\PowerShell",
             "C:\Users\$($_.Name)\.gitconfig",
             "C:\Users\$($_.Name)\.gitconfig-azure",
             "C:\Users\$($_.Name)\.gitconfig-github",
@@ -52,8 +56,8 @@ Get-ChildItem -Path "C:\Users" -Directory | ForEach-Object {
 
         $targets | ForEach-Object { Remove-Item -Path $_ -Recurse -Force -ErrorAction SilentlyContinue }
 
-        New-Item -ItemType SymbolicLink -Path "$ENV:OneDrive\Dokumente\WindowsPowerShell" -Value "$dotfiles\pwsh" -Force
-        New-Item -ItemType SymbolicLink -Path "$ENV:OneDrive\Dokumente\PowerShell" -Value "$dotfiles\pwsh" -Force
+        New-Item -ItemType SymbolicLink -Path "$docFolder\WindowsPowerShell" -Value "$dotfiles\pwsh"  -Force
+        New-Item -ItemType SymbolicLink -Path "$docFolder\PowerShell" -Value "$dotfiles\pwsh" -Force
         New-Item -ItemType SymbolicLink -Path "C:\Users\$($_.Name)\.gitconfig" -Value "$dotfiles\.gitconfig" -Force
         New-Item -ItemType SymbolicLink -Path "C:\Users\$($_.Name)\.gitconfig-azure" -Value "$dotfiles\.gitconfig-azure" -Force
         New-Item -ItemType SymbolicLink -Path "C:\Users\$($_.Name)\.gitconfig-github" -Value "$dotfiles\.gitconfig-github" -Force
@@ -84,7 +88,7 @@ $user_path = $(Get-Content -Path "$dotfiles\path_user.txt") -replace "<home>", $
 ## Apply DSC configuration
 Start-Process -FilePath "winget.exe" -ArgumentList "configure --enable" -Wait -PassThru
 Start-Process -FilePath "winget.exe" -ArgumentList "configure $dotfiles\client_configuration.dsc.yaml --accept-configuration-agreements" -Wait -PassThru
-Start-Process -FilePath "winget.exe" -ArgumentList "configure $dotfiles\user_configuration.dsc.yaml --accept-configuration-agreements" -Wait -PassThru
+etart-Process -FilePath "winget.exe" -ArgumentList "configure $dotfiles\user_configuration.dsc.yaml --accept-configuration-agreements" -Wait -PassThru
 
 ## Set wallpaper
 #New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Force -ErrorAction SilentlyContinue | Out-Null
