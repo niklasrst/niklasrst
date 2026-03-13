@@ -88,7 +88,7 @@ $user_path = $(Get-Content -Path "$dotfiles\path_user.txt") -replace "<home>", $
 ## Apply DSC configuration
 Start-Process -FilePath "winget.exe" -ArgumentList "configure --enable" -Wait -PassThru
 Start-Process -FilePath "winget.exe" -ArgumentList "configure $dotfiles\client_configuration.dsc.yaml --accept-configuration-agreements" -Wait -PassThru
-etart-Process -FilePath "winget.exe" -ArgumentList "configure $dotfiles\user_configuration.dsc.yaml --accept-configuration-agreements" -Wait -PassThru
+Start-Process -FilePath "winget.exe" -ArgumentList "configure $dotfiles\user_configuration.dsc.yaml --accept-configuration-agreements" -Wait -PassThru
 
 ## Set wallpaper
 #New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Force -ErrorAction SilentlyContinue | Out-Null
