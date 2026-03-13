@@ -86,13 +86,6 @@ Start-Process -FilePath "winget.exe" -ArgumentList "configure --enable" -Wait -P
 Start-Process -FilePath "winget.exe" -ArgumentList "configure $dotfiles\client_configuration.dsc.yaml --accept-configuration-agreements" -Wait -PassThru
 Start-Process -FilePath "winget.exe" -ArgumentList "configure $dotfiles\user_configuration.dsc.yaml --accept-configuration-agreements" -Wait -PassThru
 
-## KeePass Configuration
-$keepass_config = "$dotfiles\KeePass.config.xml"
-##$keepass_dest = "$ENV:APPDATA\KeePass\KeePass.config.xml"
-Start-Process -FilePath "C:\Program Files\KeePass Password Safe 2\KeePass.exe" -ArgumentList "--import-xml=$keepass_config" -Wait -PassThru
-Start-Sleep -Seconds 2
-Get-Process -Name "KeePass" | Stop-Process -Force
-
 ## Set wallpaper
 #New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Force -ErrorAction SilentlyContinue | Out-Null
 #New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP" -Name 'DesktopImageStatus' -Value "1" -PropertyType DWORD -Force | Out-Null
