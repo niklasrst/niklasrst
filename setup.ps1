@@ -48,7 +48,7 @@ Get-ChildItem -Path "C:\Users" -Directory | ForEach-Object {
 
         $status = dsregcmd /status | Out-String
         $isManaged = $status -match "AzureAdPrt : YES" -and $status -match "MdmUrl : https://enrollment.manage.microsoft.com"
-        if ($true -eq $isManaged) { $docFolder = $ENV:OneDrive\Documents } else { $docFolder = "C:\Users\$($_.Name)\Documents" }
+        if ($true -eq $isManaged) { $docFolder = $ENV:OneDrive\Dokumente } else { $docFolder = "C:\Users\$($_.Name)\Documents" }
  
         $targets = @(
             "$docFolder\WindowsPowerShell",
@@ -70,6 +70,9 @@ Get-ChildItem -Path "C:\Users" -Directory | ForEach-Object {
 
         Move-Item -Path "C:\Users\$($_.Name)\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" -Destination "C:\Users\$($_.Name)\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json.org"
         New-Item -ItemType SymbolicLink -Path "C:\Users\$($_.Name)\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" -Value "$dotfiles\windowsterminal\settings.json" -Force
+
+        Get-ChildItem -Path "$docFolder\WindowsPowerShell" -Recurse -Force | ForEach-Object { $_.Attributes = $_.Attributes -bor "Hidden" -bor "System" }
+        Get-ChildItem -Path "$docFolder\PowerShell" -Recurse -Force | ForEach-Object { $_.Attributes = $_.Attributes -bor "Hidden" -bor "System" }
     }
 }
 
