@@ -36,6 +36,11 @@ winget install git.git --source winget --force
 Start-Process "C:\Program Files\Git\cmd\git.exe" -ArgumentList "clone https://github.com/niklasrst/dotfiles.git $($dotfiles)" -Wait -PassThru
 Start-Sleep -Seconds 2
 
+## Prevent OneDrive Sync for special folders
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\OneDrive\EnableODIgnoreListFromGPO" -Force | Out-Null
+New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\OneDrive\EnableODIgnoreListFromGPO" -Name "1" -Value "PowerShell" -PropertyType String -Force | Out-Null
+New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\OneDrive\EnableODIgnoreListFromGPO" -Name "1" -Value "WindowsPowerShell" -PropertyType String -Force | Out-Null
+
 ## Setup symlinks
 Get-ChildItem -Path "C:\Users" -Directory | ForEach-Object {
     if ($_.Name -notin "defaultuser0", "public", "All Users", "Default") {
