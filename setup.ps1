@@ -71,8 +71,8 @@ Get-ChildItem -Path "C:\Users" -Directory | ForEach-Object {
         Move-Item -Path "C:\Users\$($_.Name)\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" -Destination "C:\Users\$($_.Name)\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json.org"
         New-Item -ItemType SymbolicLink -Path "C:\Users\$($_.Name)\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" -Value "$dotfiles\windowsterminal\settings.json" -Force
 
-        Get-ChildItem -Path "$docFolder\WindowsPowerShell" -Recurse -Force | ForEach-Object { $_.Attributes = $_.Attributes -bor "Hidden" -bor "System" }
-        Get-ChildItem -Path "$docFolder\PowerShell" -Recurse -Force | ForEach-Object { $_.Attributes = $_.Attributes -bor "Hidden" -bor "System" }
+        #Get-ChildItem -Path "$docFolder\WindowsPowerShell" -Recurse -Force | ForEach-Object { $_.Attributes = $_.Attributes -bor "System" }
+        #Get-ChildItem -Path "$docFolder\PowerShell" -Recurse -Force | ForEach-Object { $_.Attributes = $_.Attributes -bor "System" }
     }
 }
 
