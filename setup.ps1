@@ -7,8 +7,8 @@
     The script is intended to be run in a Windows environment and requires administrative privileges.
 
 .EXAMPLE
-    Invoke-Expression (Invoke-RestMethod aka.rastcloud.com/setup)
-    iex (irm aka.rastcloud.com/setup)
+    Invoke-Expression (Invoke-RestMethod aka.rastlabs.com/setup)
+    iex (irm aka.rastlabs.com/setup)
 
     Update Git submodules
     git pull --recurse-submodules
