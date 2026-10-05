@@ -48,7 +48,7 @@ Get-ChildItem -Path "C:\Users" -Directory | ForEach-Object {
 
         $status = dsregcmd /status | Out-String
         $isManaged = $status -match "AzureAdPrt : YES" -and $status -match "MdmUrl : https://enrollment.manage.microsoft.com"
-        if ($true -eq $isManaged) { $docFolder = $ENV:OneDrive\Dokumente } else { $docFolder = "C:\Users\$($_.Name)\Documents" }
+        if ($true -eq $isManaged) { $docFolder = $ENV:OneDrive\Documents } else { $docFolder = "C:\Users\$($_.Name)\Documents" }
  
         $targets = @(
             "$docFolder\WindowsPowerShell",
