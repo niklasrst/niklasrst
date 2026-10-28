@@ -63,6 +63,7 @@ Get-ChildItem -Path "C:\Users" -Directory | ForEach-Object {
 
         New-Item -ItemType SymbolicLink -Path "$docFolder\WindowsPowerShell" -Value "$dotfiles\pwsh"  -Force
         New-Item -ItemType SymbolicLink -Path "$docFolder\PowerShell" -Value "$dotfiles\pwsh" -Force
+        New-Item -ItemType SymbolicLink -Path "C:\Users\$($_.Name)\.pi" -Value "$dotfiles\.pi" -Force
         New-Item -ItemType SymbolicLink -Path "C:\Users\$($_.Name)\.gitconfig" -Value "$dotfiles\.gitconfig" -Force
         New-Item -ItemType SymbolicLink -Path "C:\Users\$($_.Name)\.gitconfig-azure" -Value "$dotfiles\.gitconfig-azure" -Force
         New-Item -ItemType SymbolicLink -Path "C:\Users\$($_.Name)\.gitconfig-github" -Value "$dotfiles\.gitconfig-github" -Force
